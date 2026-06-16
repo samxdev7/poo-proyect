@@ -1,43 +1,23 @@
 package com.github.project;
 
-/**
- * Representa un punto de control dentro de una ruta.
- */
+
 public class PuntoControl {
 
-    /**
-     * Identificador único del punto de control.
-     */
+    // ==========================
+    // Atributos
+    // ==========================
+
     private String idControl;
-
-    /**
-     * Ubicación física del punto de control.
-     */
     private String ubicacion;
-
-    /**
-     * Hora programada para pasar por el punto.
-     */
     private String horaProgramada;
-
-    /**
-     * Hora real en la que se pasó por el punto.
-     */
     private String horaRealDePaso;
-
-    /**
-     * Indica si el punto fue superado.
-     */
     private boolean superado;
-
-    /**
-     * Monitor responsable del punto de control.
-     */
     private Monitor monitorACargo;
 
-    /**
-     * Constructor de la clase PuntoControl.
-     */
+    // ==========================
+    // Constructores
+    // ==========================
+
     public PuntoControl(String idControl,
                         String ubicacion,
                         String horaProgramada,
@@ -50,26 +30,32 @@ public class PuntoControl {
         this.superado = false;
     }
 
-    /**
-     * Muestra toda la información del punto de control.
-     *
-     * @return Información del punto.
-     */
-    public String mostrarInformacionDePuntoDeControl() {
-
-        return "ID: " + idControl +
-               "\nUbicación: " + ubicacion +
-               "\nHora Programada: " + horaProgramada +
-               "\nHora Real: " + horaRealDePaso +
-               "\nSuperado: " + superado;
-    }
+    // ==========================
+    // Getters y Setters
+    // ==========================
 
     public String getIdControl() {
         return idControl;
     }
 
+    public void setIdControl(String idControl) {
+        this.idControl = idControl;
+    }
+
+    public String getUbicacion() {
+        return ubicacion;
+    }
+
+    public void setUbicacion(String ubicacion) {
+        this.ubicacion = ubicacion;
+    }
+
     public String getHoraProgramada() {
         return horaProgramada;
+    }
+
+    public void setHoraProgramada(String horaProgramada) {
+        this.horaProgramada = horaProgramada;
     }
 
     public String getHoraRealDePaso() {
@@ -87,4 +73,26 @@ public class PuntoControl {
     public void setSuperado(boolean superado) {
         this.superado = superado;
     }
+
+    public Monitor getMonitorACargo() {
+        return monitorACargo;
+    }
+
+    public void setMonitorACargo(Monitor monitorACargo) {
+        this.monitorACargo = monitorACargo;
+    }
+
+    // ==========================
+    // Métodos
+    // ==========================
+
+    public String mostrarInformacionDePuntoDeControl() {
+
+        return "ID: " + idControl +
+               "\nUbicación: " + ubicacion +
+               "\nHora Programada: " + horaProgramada +
+               "\nHora Real: " + horaRealDePaso +
+               "\nSuperado: " + superado;
+    }
+
 }

@@ -1,42 +1,23 @@
 package com.github.project;
-/**
- * Representa una infracción registrada durante una jornada.
- */
+
+
 public class Infraccion {
 
-    /**
-     * Identificador único de la infracción.
-     */
+    // ==========================
+    // Atributos
+    // ==========================
+
     private String idInfraccion;
-
-    /**
-     * Descripción detallada de la infracción.
-     */
     private String descripcion;
-
-    /**
-     * Nivel de gravedad de la infracción.
-     */
     private String nivelDeInfraccion;
-
-    /**
-     * Fecha y hora en que fue registrada.
-     */
     private String fechaYHoraDeRegistro;
-
-    /**
-     * Jornada relacionada con la infracción.
-     */
     private String idJornada;
-
-    /**
-     * Monitor que reportó la infracción.
-     */
     private String monitorQueReporto;
 
-    /**
-     * Constructor de la clase Infraccion.
-     */
+    // ==========================
+    // Constructores
+    // ==========================
+
     public Infraccion(String idInfraccion,
                       String descripcion,
                       String nivelDeInfraccion,
@@ -52,20 +33,70 @@ public class Infraccion {
         this.monitorQueReporto = monitorQueReporto;
     }
 
-    /**
-     * Devuelve el nivel de gravedad de la infracción.
-     *
-     * @return Nivel de infracción.
-     */
+    // ==========================
+    // Getters y Setters
+    // ==========================
+
+    public String getIdInfraccion() {
+        return idInfraccion;
+    }
+
+    public void setIdInfraccion(String idInfraccion) {
+        this.idInfraccion = idInfraccion;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
+    public String getNivel() {
+        return nivelDeInfraccion;
+    }
+
+    public String getNivelDeInfraccion() {
+        return nivelDeInfraccion;
+    }
+
+    public void setNivelDeInfraccion(String nivelDeInfraccion) {
+        this.nivelDeInfraccion = nivelDeInfraccion;
+    }
+
+    public String getFechaYHoraDeRegistro() {
+        return fechaYHoraDeRegistro;
+    }
+
+    public void setFechaYHoraDeRegistro(String fechaYHoraDeRegistro) {
+        this.fechaYHoraDeRegistro = fechaYHoraDeRegistro;
+    }
+
+    public String getIdJornada() {
+        return idJornada;
+    }
+
+    public void setIdJornada(String idJornada) {
+        this.idJornada = idJornada;
+    }
+
+    public String getMonitorQueReporto() {
+        return monitorQueReporto;
+    }
+
+    public void setMonitorQueReporto(String monitorQueReporto) {
+        this.monitorQueReporto = monitorQueReporto;
+    }
+
+    // ==========================
+    // Métodos
+    // ==========================
+
     public String mostrarNivelDeInfraccion() {
         return nivelDeInfraccion;
     }
 
-    /**
-     * Devuelve todos los detalles de la infracción.
-     *
-     * @return Información completa de la infracción.
-     */
     public String mostrarDetallesDeInfraccion() {
 
         return "ID: " + idInfraccion +
@@ -76,11 +107,4 @@ public class Infraccion {
                "\nMonitor: " + monitorQueReporto;
     }
 
-    public String getNivel() {
-        return nivelDeInfraccion;
-    }
-
-    public String getIdInfraccion() {
-        return idInfraccion;
-    }
 }

@@ -3,76 +3,83 @@ package com.github.project;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Representa a un monitor encargado de supervisar
- * puntos de control en una jornada.
- */
+
 public class Monitor extends Usuario {
 
-    /**
-     * Identificador único del monitor.
-     */
+    // ==========================
+    // Atributos
+    // ==========================
+
     private String idMonitor;
-
-    /**
-     * Lista de puntos de control asignados.
-     */
     private List<PuntoControl> puntosDeControlAsignados;
-
-    /**
-     * Lista de puntos de control ya marcados.
-     */
     private List<PuntoControl> puntosDeControlMarcados;
 
-    /**
-     * Constructor de la clase Monitor.
-     *
-     * @param idMonitor Identificador del monitor.
-     */
-    public Monitor(String idMonitor) {
+    // ==========================
+    // Constructores
+    // ==========================
+
+    public Monitor(
+            String idUsuario,
+            String nombre,
+            String contrasena,
+            String tipoUsuario,
+            boolean activo,
+            Cooperativa cooperativa,
+            String idMonitor) {
+
+        super(
+                idUsuario,
+                nombre,
+                contrasena,
+                tipoUsuario,
+                activo,
+                cooperativa);
+
         this.idMonitor = idMonitor;
         this.puntosDeControlAsignados = new ArrayList<>();
         this.puntosDeControlMarcados = new ArrayList<>();
     }
 
-    /**
-     * Obtiene el identificador del monitor.
-     *
-     * @return id del monitor.
-     */
+    // ==========================
+    // Getters y Setters
+    // ==========================
+
     public String getIdMonitor() {
         return idMonitor;
     }
 
-    /**
-     * Modifica el identificador del monitor.
-     *
-     * @param idMonitor Nuevo identificador.
-     */
     public void setIdMonitor(String idMonitor) {
         this.idMonitor = idMonitor;
     }
 
-    /**
-     * Reporta el resultado de un punto de control.
-     *
-     * @param idJornada Jornada evaluada.
-     * @param idControl Punto de control evaluado.
-     */
-    public void reportarResultadoDePuntoDeControl(String idJornada, String idControl) {
+    public List<PuntoControl> getPuntosDeControlAsignados() {
+        return puntosDeControlAsignados;
+    }
+
+    public void setPuntosDeControlAsignados(
+            List<PuntoControl> puntosDeControlAsignados) {
+        this.puntosDeControlAsignados = puntosDeControlAsignados;
+    }
+
+    public List<PuntoControl> getPuntosDeControlMarcados() {
+        return puntosDeControlMarcados;
+    }
+
+    public void setPuntosDeControlMarcados(
+            List<PuntoControl> puntosDeControlMarcados) {
+        this.puntosDeControlMarcados = puntosDeControlMarcados;
+    }
+
+    // ==========================
+    // Métodos
+    // ==========================
+
+    public void reportarResultadoDePuntoDeControl(
+            String idJornada,
+            String idControl) {
         // TODO
     }
 
-    /**
-     * Registra una infracción cometida por un conductor.
-     *
-     * @param licenciaDeConducir Licencia del conductor.
-     * @param nivel Nivel de la infracción.
-     * @param descripcion Descripción.
-     * @param idJornada Jornada donde ocurrió.
-     * @param idControl Punto de control relacionado.
-     * @return Infracción registrada.
-     */
     public Infraccion registrarInfraccion(
             String licenciaDeConducir,
             String nivel,
@@ -83,23 +90,15 @@ public class Monitor extends Usuario {
         return null;
     }
 
-    /**
-     * Marca un punto de control como visitado.
-     *
-     * @param idControl Identificador del punto.
-     * @param horaReal Hora real de llegada.
-     */
-    public void marcarPuntoDeControl(String idControl, String horaReal) {
+    public void marcarPuntoDeControl(
+            String idControl,
+            String horaReal) {
         // TODO
     }
 
-    /**
-     * Calcula el retraso de llegada a un punto de control.
-     *
-     * @param idControl Punto de control.
-     * @return Minutos de retraso.
-     */
-    public int calcularRetrasoDePuntoDeControlMinutos(String idControl) {
+    public int calcularRetrasoDePuntoDeControlMinutos(
+            String idControl) {
         return 0;
     }
+
 }
