@@ -13,6 +13,13 @@ import com.codename1.ui.util.Resources;
  * of building native mobile applications using Java.
  */
 public class pooproject extends Lifecycle {
+    //Metodo de inicializacion
+    @Override
+    public void init(Object context) {
+        super.init(context);
+        // Coloca aquí tu lógica de inicialización
+    }
+    
     @Override
     public void runApp() {
         Form hi = new Form("Hi World", BoxLayout.y());
@@ -27,5 +34,4 @@ public class pooproject extends Lifecycle {
     private void hello() {
         Dialog.show("Hello Codename One", "Welcome to Codename One", "OK", null);
     }
-
 }
