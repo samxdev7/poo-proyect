@@ -1,11 +1,7 @@
-
 package com.github.project;
 
 
-public class Usuario {
-    
-   
-
+public abstract class Usuario {
     // Atributos
     private String idUsuario;
     private String nombre;

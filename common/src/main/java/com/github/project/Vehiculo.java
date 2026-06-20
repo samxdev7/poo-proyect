@@ -2,7 +2,7 @@
 package com.github.project;
 
 
-public class Vehiculo {
+public abstract class Vehiculo {
 
     // Atributos
     private String placa;
@@ -23,7 +23,6 @@ public class Vehiculo {
     }
 
     // Getters
-
     public String getPlaca() {
         return placa;
     }
@@ -45,7 +44,6 @@ public class Vehiculo {
     }
 
     // Setters
-
     public void setPlaca(String placa) {
         this.placa = placa;
     }
