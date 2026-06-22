@@ -22,13 +22,12 @@ public class pooproject extends Lifecycle {
     
     @Override
     public void runApp() {
-        Form hi = new Form("Hi World", BoxLayout.y());
-        Button helloButton = new Button("Hello World");
-        hi.add(helloButton);
-        helloButton.addActionListener(e -> hello());
-        hi.getToolbar().addMaterialCommandToSideMenu("Hello Command",
-        FontImage.MATERIAL_CHECK, 4, e -> hello());
-        hi.show();
+       new LoginForm().show();
+       new InicioConductorForm().show();
+       new PantallaPerfilConductor().show();
+       new PantallaHistorialConductor().show();
+       new InicioGestorForm().show();
+       new InicioMonitorForm().show();
     }
 
     private void hello() {
