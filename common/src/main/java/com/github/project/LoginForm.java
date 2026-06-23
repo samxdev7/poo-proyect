@@ -45,11 +45,11 @@ public class LoginForm extends Form {
                 Usuario mockUsuario = null;
                 
                 if ("driver".equalsIgnoreCase(txtUser)) {
-                    mockUsuario = new Conductor("U01", "Cisneros", "123", "CONDUCTOR", true, null);
+                    mockUsuario = new Conductor("U01", "Cisneros", "123", "CONDUCTOR", true, null,"DL-12345678",true);
                 } else if ("monitor".equalsIgnoreCase(txtUser)) {
-                    mockUsuario = new Monitor("U02", "Monitor UNI", "123", "MONITOR", true, null);
+                    mockUsuario = new Monitor("U02", "Monitor UNI", "123", "MONITOR", true, null,"MON-001");
                 } else if ("gestor".equalsIgnoreCase(txtUser)) {
-                    mockUsuario = new GestorCooperativa("U03", "Admin Cooperativa", "123", "GESTOR", true, null);
+                    mockUsuario = new GestorCooperativa("U03", "Admin Cooperativa", "123", "GESTOR", true, null,"GES-001");
                 }   
                 
                 // Entra directo si el objeto se logro crear con exito
