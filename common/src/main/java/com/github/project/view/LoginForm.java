@@ -21,7 +21,7 @@ public class LoginForm extends Form {
     private void inicializarComponentes() {
         getToolbar().setHidden(true);
         
-        Label etiquetaTitulo = new Label("Inicie Sesión, PorFavor");
+        Label etiquetaTitulo = new Label("Inicie Sesión, Por Favor");
         // Reutiliza tu estilo de titulos para mantener la consistencia
         etiquetaTitulo.setUIID("SubtituloSeccion"); 
 
