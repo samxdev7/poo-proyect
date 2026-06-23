@@ -12,10 +12,13 @@ public final class CoordinadorNavegacion {
     private Cooperativa cooperativaGlobal;
 
     private CoordinadorNavegacion() {
-        cooperativaGlobal = new Cooperativa("RUC-123", "Transportes UNI", "Managua");
-        cooperativaGlobal.getUsuarios().add(new GestorCooperativa(
-                "U01", "root", "root", "GESTOR", true, 
-                cooperativaGlobal, "GES-01"));
+        cooperativaGlobal = com.github.project.PersistenciaJson.cargarDatosJson();
+        if (cooperativaGlobal == null) {
+            cooperativaGlobal = new Cooperativa("RUC-123", "Transportes UNI", "Managua");
+            cooperativaGlobal.getUsuarios().add(new GestorCooperativa(
+                    "U01", "root", "root", "GESTOR", true, 
+                    cooperativaGlobal, "GES-01"));
+        }
     }
 
     public static synchronized CoordinadorNavegacion getInstancia() {

@@ -49,16 +49,18 @@ public class InicioGestorForm extends Form {
         Container centro = new Container(BoxLayout.y());
         centro.setScrollableY(true);
 
-        TextField txtBuscarGestor = new TextField("", "Buscar conductor, bus o rutas...");
-        txtBuscarGestor.setUIID("CampoTexto");
-
         Label lblTitulo = new Label("Resumen de Control Operativo:");
         lblTitulo.setUIID("SubtituloSeccion");
 
         MultiButton jActivas = new MultiButton("Jornadas en Curso: " + cooperativa.getJornadasActivas().size());
         jActivas.setTextLine2("Flota total: " + cooperativa.getFlotas().size() + " | Empleados: " + cooperativa.getUsuarios().size());
         jActivas.addActionListener(e -> {
-            Dialog.show("Reporte", cooperativa.generarReporteGeneralDeActividad(), "Cerrar", null);
+            com.codename1.ui.TextArea ta = new com.codename1.ui.TextArea(cooperativa.generarReporteGeneralDeActividad());
+            ta.setEditable(false);
+            ta.setUIID("Label");
+            ta.getAllStyles().setBgTransparency(0);
+            Command btnCerrar = new Command("Cerrar");
+            Dialog.show("Reporte Operativo", ta, btnCerrar);
         });
 
 
@@ -86,19 +88,26 @@ public class InicioGestorForm extends Form {
         btnRutas.setUIID("BotonLogin");
         btnRutas.addActionListener(e -> new GestionRutasForm(gestor, cooperativa).show());
 
-        centro.addAll(txtBuscarGestor, lblTitulo, jActivas, lblGestion, btnRegistrar, btnModificar, btnJornada, btnFlota, btnRutas);
+        Button btnConsultar = new Button("Consultar Personal Registrado");
+        btnConsultar.setUIID("BotonLogin");
+        btnConsultar.addActionListener(e -> new ConsultarUsuariosForm(gestor, cooperativa).show());
+
+        centro.addAll(lblTitulo, jActivas, lblGestion, btnRegistrar, btnModificar, btnConsultar, btnJornada, btnFlota, btnRutas);
         this.add(BorderLayout.CENTER, centro);
 
-        tb.addMaterialCommandToSideMenu("Registrar Usuario", FontImage.MATERIAL_PERSON_ADD, e -> ejecutarRegistrarUsuario());
-        tb.addMaterialCommandToSideMenu("Modificar Usuario", FontImage.MATERIAL_EDIT, e -> ejecutarModificarUsuario());
-        tb.addMaterialCommandToSideMenu("Gestionar Flota", FontImage.MATERIAL_DIRECTIONS_BUS, e -> ejecutarGestionVehiculo());
+        tb.addMaterialCommandToSideMenu("Registrar Usuario", 
+            FontImage.MATERIAL_PERSON_ADD, e -> ejecutarRegistrarUsuario());
+        tb.addMaterialCommandToSideMenu("Modificar Usuario", 
+            FontImage.MATERIAL_EDIT, e -> ejecutarModificarUsuario());
+        tb.addMaterialCommandToSideMenu("Gestionar Flota", 
+            FontImage.MATERIAL_DIRECTIONS_BUS, e -> ejecutarGestionVehiculo());
     }
 
     private void ejecutarRegistrarUsuario() {
         TextField txtNombre = new TextField("", "Nombre completo");
         txtNombre.setUIID("CampoTexto");
         
-        TextField txtPassword = new TextField("", "Mínimo 6 caracteres");
+        TextField txtPassword = new TextField("", "Ingrese una contraseña segura");
         txtPassword.setUIID("CampoTexto");
         txtPassword.setConstraint(TextField.PASSWORD);
         
@@ -147,12 +156,13 @@ public class InicioGestorForm extends Form {
                 }
                 
                 Usuario nuevo;
+                String idUnico = "U-" + System.currentTimeMillis();
                 if ("GESTOR".equalsIgnoreCase(rolSeleccionado)) {
-                    nuevo = new GestorCooperativa("UX", txtNombre.getText(), txtPassword.getText(), "GESTOR", true, cooperativa, txtIdEspecial.getText());
+                    nuevo = new GestorCooperativa(idUnico, txtNombre.getText(), txtPassword.getText(), "GESTOR", true, cooperativa, txtIdEspecial.getText());
                 } else if ("MONITOR".equalsIgnoreCase(rolSeleccionado)) {
-                    nuevo = new Monitor("UX", txtNombre.getText(), txtPassword.getText(), "MONITOR", true, cooperativa, txtIdEspecial.getText());
+                    nuevo = new Monitor(idUnico, txtNombre.getText(), txtPassword.getText(), "MONITOR", true, cooperativa, txtIdEspecial.getText());
                 } else {
-                    nuevo = new Conductor("UX", txtNombre.getText(), txtPassword.getText(), "CONDUCTOR", true, cooperativa, txtIdEspecial.getText(), true);
+                    nuevo = new Conductor(idUnico, txtNombre.getText(), txtPassword.getText(), "CONDUCTOR", true, cooperativa, txtIdEspecial.getText(), true);
                 }
                 gestor.agregarUsuarioACooperativa(nuevo);
                 this.removeAll();
@@ -196,6 +206,7 @@ public class InicioGestorForm extends Form {
             
             if (usuarioSeleccionado != null) {
                 TextField txtNuevaPassword = new TextField(usuarioSeleccionado.getContrasena(), "Nueva contraseña");
+                txtNuevaPassword.setConstraint(TextField.PASSWORD);
                 txtNuevaPassword.setUIID("CampoTexto");
                 
                 ComboBox<String> cmbEstado = new ComboBox<>("ACTIVO", "INACTIVO");
@@ -267,15 +278,19 @@ public class InicioGestorForm extends Form {
             return;
         }
 
+        TextField txtFechaHora = new TextField("", "Ej: 06:00 AM - 15/05/2026");
+        txtFechaHora.setUIID("CampoTexto");
+
         Command cmdAsignar = new Command("Asignar");
         Command cmdCancelar = new Command("Cancelar");
         
         Command resultado = Dialog.show(
-            "Planificar Jornada", 
+            "Iniciar Jornada", 
             BoxLayout.encloseY(
                 new Label("Conductor Disponible:"), cmbChofer, 
                 new Label("Vehículo de la Flota:"), cmbVehiculo,
-                new Label("Ruta Asignada:"), cmbRuta
+                new Label("Ruta Asignada:"), cmbRuta,
+                new Label("Fecha y Hora de Inicio:"), txtFechaHora
             ), 
             new Command[] { cmdAsignar, cmdCancelar }
         );
@@ -313,9 +328,17 @@ public class InicioGestorForm extends Form {
             }
 
             if (conductorSeleccionado != null && vehiculoSeleccionado != null && rutaSeleccionada != null) {
+                // Evitar jornadas duplicadas
+                for (com.github.project.model.Jornada j : cooperativa.getJornadasActivas()) {
+                    if (j.getConductor().equals(conductorSeleccionado) && j.getFecha().equalsIgnoreCase(txtFechaHora.getText())) {
+                        Dialog.show("Error", "Este conductor ya tiene una jornada asignada en esa misma fecha y hora.", "OK", null);
+                        return;
+                    }
+                }
+
                 String numJornada = "J0" + (cooperativa.getJornadasActivas().size() + cooperativa.getJornadasFinalizadas().size() + 1);
                 com.github.project.model.Jornada nuevaJornada = new com.github.project.model.Jornada(
-                        numJornada, "06:00 AM", vehiculoSeleccionado, conductorSeleccionado, rutaSeleccionada);
+                        numJornada, txtFechaHora.getText().isEmpty() ? "Ahora" : txtFechaHora.getText(), vehiculoSeleccionado, conductorSeleccionado, rutaSeleccionada);
                 
                 cooperativa.getJornadasActivas().add(nuevaJornada);
                 
@@ -337,37 +360,64 @@ public class InicioGestorForm extends Form {
         txtMarca.setUIID("CampoTexto");
         cmbTipo.setUIID("CampoTexto");
         
-        Command cmdGuardar = new Command("Guardar");
+        Command cmdSiguiente = new Command("Siguiente");
         Command cmdCancelar = new Command("Cancelar");
         
-        Command resultado = Dialog.show(
-            "Alta de Vehículo", 
+        Command resultado1 = Dialog.show(
+            "Registro de Vehículo (Paso 1)", 
             BoxLayout.encloseY(
                 new Label("Placa:"), txtPlaca, 
                 new Label("Marca/Modelo:"), txtMarca,
-                new Label("Tipo de Combustible:"), cmbTipo
+                new Label("Tipo de Vehículo:"), cmbTipo
             ), 
-            new Command[] { cmdGuardar, cmdCancelar }
+            new Command[] { cmdSiguiente, cmdCancelar }
         );
         
-        if (resultado == cmdGuardar) {
+        if (resultado1 == cmdSiguiente) {
             if (txtPlaca.getText().trim().isEmpty() || txtMarca.getText().trim().isEmpty()) {
                 Dialog.show("Error", "Todos los campos de texto son requeridos.", "OK", null);
                 return;
             }
+
             com.github.project.model.Vehiculo v;
-            if ("Diésel".equals(cmbTipo.getSelectedItem())) {
-                v = new com.github.project.model.VehiculoDiesel(txtPlaca.getText(), txtMarca.getText(), "Standard", "Diésel", "Activo", "VD-" + txtPlaca.getText(), 60, 60);
-            } else {
-                v = new com.github.project.model.VehiculoElectrico(txtPlaca.getText(), txtMarca.getText(), "Standard", "Eléctrico", "Activo", "VE-" + txtPlaca.getText(), 100, 100, 0);
+            boolean esElectrico = "Eléctrico".equalsIgnoreCase(cmbTipo.getSelectedItem()) || "Electrico".equalsIgnoreCase(cmbTipo.getSelectedItem());
+            
+            TextField txtDato1 = new TextField("", esElectrico ? "Capacidad Batería (kWh)" : "Capacidad Tanque (Litros)");
+            TextField txtDato2 = new TextField("", esElectrico ? "Nivel de Carga (%)" : "Nivel de Combustible (Litros)");
+            txtDato1.setUIID("CampoTexto");
+            txtDato2.setUIID("CampoTexto");
+
+            Command cmdGuardar = new Command("Guardar");
+            Command resultado2 = Dialog.show(
+                "Especificaciones del " + cmbTipo.getSelectedItem(),
+                BoxLayout.encloseY(
+                    new Label(esElectrico ? "Batería:" : "Tanque:"), txtDato1,
+                    new Label("Carga/Nivel Actual:"), txtDato2
+                ),
+                new Command[] { cmdGuardar, cmdCancelar }
+            );
+
+            if (resultado2 == cmdGuardar) {
+                double val1 = 0;
+                double val2 = 0;
+                try {
+                    val1 = Double.parseDouble(txtDato1.getText().trim());
+                    val2 = Double.parseDouble(txtDato2.getText().trim());
+                } catch (Exception ex) {}
+
+                if (esElectrico) {
+                    v = new com.github.project.model.VehiculoElectrico(txtPlaca.getText(), txtMarca.getText(), "Standard", "Eléctrico", "Activo", "VE-" + txtPlaca.getText(), val1, val2, 0);
+                } else {
+                    v = new com.github.project.model.VehiculoDiesel(txtPlaca.getText(), txtMarca.getText(), "Standard", "Diésel", "Activo", "VD-" + txtPlaca.getText(), val1, val2);
+                }
+                gestor.agregarVehiculo(v);
+                
+                this.removeAll();
+                maquetarVisual();
+                this.revalidate();
+                
+                Dialog.show("Éxito", "Vehículo " + txtPlaca.getText() + " registrado y activo.", "OK", null);
             }
-            gestor.agregarVehiculo(v);
-            
-            this.removeAll();
-            maquetarVisual();
-            this.revalidate();
-            
-            Dialog.show("Éxito", "Vehículo " + txtPlaca.getText() + " registrado y activo.", "OK", null);
         }
     }
 }

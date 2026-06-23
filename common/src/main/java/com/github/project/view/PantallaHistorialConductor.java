@@ -12,39 +12,70 @@ public class PantallaHistorialConductor extends Form {
         super("Historial de Jornadas", BoxLayout.y());
         Toolbar tb = getToolbar();
         
-        /*Agrega el comando directamente a la barra izquierda usando 
-        el metodo correcto*/
-        // Boton de back
         tb.addMaterialCommandToLeftBar("", FontImage.MATERIAL_ARROW_BACK, e -> {
             CoordinadorNavegacion.getInstancia().despacharPantallaRaiz();
         });
 
-        //Usamos Container con el UIID MultiButton
-        Container itemHistorial = new Container(BoxLayout.y());
-        itemHistorial.setUIID("MultiButton"); 
-        itemHistorial.setLeadComponent(null); // Evita conflictos de enfoque
+        com.github.project.model.Usuario u = CoordinadorNavegacion.getInstancia().getUsuarioAutenticado();
+        if (!(u instanceof com.github.project.model.Conductor)) {
+            this.add(new Label("No eres un conductor."));
+            return;
+        }
 
-        Label linea1 = new Label("Fecha: 21/06/2026");
-        Label linea2 = new Label("Recorrido: 45 km ");
-        
-        /*Configuramos los estilos nativos para que herede la apariencia 
-        exacta del MultiButton*/
-        linea1.setUIID("MultiButtonLine1");
-        linea2.setUIID("MultiButtonLine2");
+        com.github.project.model.Conductor conductor = (com.github.project.model.Conductor) u;
+        java.util.List<com.github.project.model.Jornada> jornadas = conductor.getJornadasRealizadas();
 
-        linea1.setTickerEnabled(false);
-        linea2.setTickerEnabled(false);
+        if (jornadas == null || jornadas.isEmpty()) {
+            this.add(new Label("Aún no tienes jornadas finalizadas."));
+            return;
+        }
 
-        // Agregamos los textos al contenedor de la tarjeta
-        itemHistorial.addAll(linea1, linea2);
-        
-        // Al tocar la tarjeta, salta tu Dialog
-        itemHistorial.addPointerReleasedListener(e -> com.codename1.ui.Dialog.show(
-            "Detalle de Jornada", 
-            "Pasajeros transportados: 120\nViajes completos: 4\nInfracciones: 0", 
-            "Entendido", null
-        ));
+        for (com.github.project.model.Jornada j : jornadas) {
+            Container itemHistorial = new Container(BoxLayout.y());
+            itemHistorial.setUIID("MultiButton"); 
+            itemHistorial.setLeadComponent(null); 
 
-        this.add(itemHistorial);
+            Label linea1 = new Label("Jornada #" + j.getNumeroDeJornada() + " - " + j.getFecha());
+            Label linea2 = new Label("Vehículo: " + j.getVehiculo().getPlaca() + " | Ruta: " + j.getRuta().getNombreDeRuta());
+            
+            linea1.setUIID("MultiButtonLine1");
+            linea2.setUIID("MultiButtonLine2");
+            linea1.setTickerEnabled(false);
+            linea2.setTickerEnabled(false);
+
+            itemHistorial.addAll(linea1, linea2);
+            
+            itemHistorial.addPointerReleasedListener(e -> {
+                StringBuilder sb = new StringBuilder();
+                sb.append("Rendimiento: ").append(j.getKilometrosRecorridos()).append(" km, ")
+                  .append(j.getPasajerosTransportados()).append(" pasajeros.\n\n");
+                
+                sb.append("--- PUNTOS DE CONTROL ---\n");
+                boolean hayNoMarcados = false;
+                
+                com.codename1.ui.Form detalleForm = new com.codename1.ui.Form("Detalle de Jornada", BoxLayout.y());
+                detalleForm.getToolbar().addMaterialCommandToLeftBar("", FontImage.MATERIAL_ARROW_BACK, evt -> this.showBack());
+                
+                com.codename1.ui.TextArea txtCabecera = new com.codename1.ui.TextArea(sb.toString());
+                txtCabecera.setEditable(false);
+                txtCabecera.setUIID("Label");
+                detalleForm.add(txtCabecera);
+
+                for (com.github.project.model.PuntoControl pc : j.getRuta().getPuntosDeControl()) {
+                    Label lblPunto = new Label(pc.getUbicacion() + " (" + pc.getHoraProgramada() + ")");
+                    if (pc.isSuperado()) {
+                        lblPunto.setText(lblPunto.getText() + " - MARCADO");
+                    } else {
+                        lblPunto.setText(lblPunto.getText() + " - NO MARCADO");
+                        lblPunto.getAllStyles().setFgColor(0xFF0000); // Color Rojo
+                    }
+                    detalleForm.add(lblPunto);
+                }
+
+                detalleForm.show();
+            });
+
+            this.add(itemHistorial);
+        }
     }
 }

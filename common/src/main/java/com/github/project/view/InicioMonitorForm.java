@@ -49,9 +49,6 @@ public class InicioMonitorForm extends Form {
         Container contenedorCentral = new Container(BoxLayout.y());
         contenedorCentral.setScrollableY(true); 
 
-        // Barra de busqueda superior
-        TextField txtBuscar = new TextField("", "Buscar parada, unidad o reporte...");
-        txtBuscar.setUIID("CampoTexto");
 
         java.util.List<com.github.project.model.PuntoControl> misPuntos = monitor.getPuntosDeControlAsignados();
         
@@ -104,10 +101,11 @@ public class InicioMonitorForm extends Form {
 
             com.codename1.ui.ComboBox<String> cmbNivel = new com.codename1.ui.ComboBox<>("LEVE", "MODERADA", "GRAVE");
 
-            TextField txtDetalle = new TextField("", "Ej: Exceso de velocidad");
+            com.codename1.ui.TextArea txtDetalle = new com.codename1.ui.TextArea(5, 20);
+            txtDetalle.setHint("Ej: Exceso de velocidad");
+            txtDetalle.setSingleLineTextArea(false);
             TextField txtFecha = new TextField("", "DD/MM/YYYY");
-            TextField txtHora = new TextField("", "HH:MM");
-            txtDetalle.setUIID("CampoTexto");
+            TextField txtHora = new TextField("", "HH:MM (24h)");
             txtFecha.setUIID("CampoTexto");
             txtHora.setUIID("CampoTexto");
             
@@ -126,7 +124,11 @@ public class InicioMonitorForm extends Form {
                 new Command[] { cmdEnviar, cmdCancelar }
             );
             
-            if (resultado == cmdEnviar && cmbChofer.getSelectedItem() != null && !txtDetalle.getText().trim().isEmpty()) {
+            if (resultado == cmdEnviar) {
+                if (cmbChofer.getSelectedItem() == null || txtDetalle.getText().trim().isEmpty() || txtHora.getText().trim().isEmpty()) {
+                    Dialog.show("Error", "Debe llenar todos los campos requeridos.", "OK", null);
+                    return;
+                }
                 com.github.project.model.Conductor infractor = null;
                 for (com.github.project.model.Usuario u : cooperativa.getUsuarios()) {
                      if (cmbChofer.getSelectedItem().equals(u.getNombre())) {
@@ -138,21 +140,20 @@ public class InicioMonitorForm extends Form {
                      java.util.List<com.github.project.model.Infraccion> lista = new java.util.ArrayList<>(infractor.getInfracciones());
                      lista.add(new com.github.project.model.Infraccion(
                         "I-" + System.currentTimeMillis(), 
-                        txtFecha.getText(), 
-                        txtHora.getText(), 
-                        cmbNivel.getSelectedItem(), 
                         txtDetalle.getText(), 
-                        "PENDIENTE"
+                        cmbNivel.getSelectedItem(), 
+                        txtFecha.getText() + " " + txtHora.getText(), 
+                        "N/A", 
+                        monitor.getNombre()
                      ));
                      infractor.setInfracciones(lista);
                      Dialog.show("Reportado", "Infracción registrada.", "OK", null);
+                } else {
+                     Dialog.show("Error", "Conductor no encontrado.", "OK", null);
                 }
             }
         });
-        // ========================================================
-        // Agrega componentes al contenedor central
         contenedorCentral.addAll(
-            txtBuscar, 
             tituloTarjeta, tarjetaControl, 
             btnInfraccion
         );

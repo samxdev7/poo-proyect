@@ -71,13 +71,21 @@ public class GestionRutasForm extends Form {
     private void ejecutarCrearRuta() {
         TextField txtNombre = new TextField("", "Ej: Ruta Universitaria");
         TextField txtOrigen = new TextField("", "Punto de salida");
-        TextField txtDestino = new TextField("", "Punto de llegada");
+        
+        com.codename1.ui.TextArea txtDestino = new com.codename1.ui.TextArea(3, 20);
+        txtDestino.setHint("Punto de llegada");
+        
         TextField txtDistancia = new TextField("", "Distancia (Km)");
+        
+        TextField txtHoraInicio = new TextField("", "Ej: 06:00");
+        TextField txtHoraFin = new TextField("", "Ej: 22:00");
         
         txtNombre.setUIID("CampoTexto");
         txtOrigen.setUIID("CampoTexto");
         txtDestino.setUIID("CampoTexto");
         txtDistancia.setUIID("CampoTexto");
+        txtHoraInicio.setUIID("CampoTexto");
+        txtHoraFin.setUIID("CampoTexto");
 
         Command cmdGuardar = new Command("Guardar");
         Command cmdCancelar = new Command("Cancelar");
@@ -88,19 +96,32 @@ public class GestionRutasForm extends Form {
                 new Label("Nombre de la ruta:"), txtNombre,
                 new Label("Origen:"), txtOrigen,
                 new Label("Destino:"), txtDestino,
-                new Label("Distancia Total (km):"), txtDistancia
+                new Label("Distancia Total (km):"), txtDistancia,
+                new Label("Hora de Inicio:"), txtHoraInicio,
+                new Label("Hora de Fin:"), txtHoraFin
             ), 
             new Command[] { cmdGuardar, cmdCancelar }
         );
         
         if (resultado == cmdGuardar && !txtNombre.getText().trim().isEmpty()) {
+            String nombreIngresado = txtNombre.getText().trim();
+            for (Ruta r : cooperativa.getRutas()) {
+                if (r.getNombreDeRuta().equalsIgnoreCase(nombreIngresado)) {
+                    Dialog.show("Error", "Ya existe una ruta con ese nombre.", "OK", null);
+                    return;
+                }
+            }
+            
             double km = 0.0;
             try {
                 km = Double.parseDouble(txtDistancia.getText().trim());
             } catch (Exception ex) {}
             
             String id = "R0" + (cooperativa.getRutas().size() + 1);
-            Ruta nueva = new Ruta(id, txtNombre.getText(), txtOrigen.getText(), txtDestino.getText(), "06:00", "22:00", 120, km);
+            String hInicio = txtHoraInicio.getText().trim().isEmpty() ? "06:00" : txtHoraInicio.getText();
+            String hFin = txtHoraFin.getText().trim().isEmpty() ? "22:00" : txtHoraFin.getText();
+            
+            Ruta nueva = new Ruta(id, txtNombre.getText(), txtOrigen.getText(), txtDestino.getText(), hInicio, hFin, 120, km);
             cooperativa.getRutas().add(nueva);
             Dialog.show("Éxito", "Ruta " + txtNombre.getText() + " creada correctamente.", "OK", null);
         }
@@ -140,6 +161,14 @@ public class GestionRutasForm extends Form {
         );
         
         if (resultado == cmdGuardar && !txtUbicacion.getText().trim().isEmpty()) {
+            // Verificar duplicidad del punto de control
+            for (PuntoControl pc : puntosControlDisponibles) {
+                if (pc.getUbicacion().equalsIgnoreCase(txtUbicacion.getText().trim()) && pc.getHoraProgramada().equalsIgnoreCase(txtHora.getText().trim())) {
+                    Dialog.show("Error", "Ya existe un Punto de Control en esa ubicación y hora.", "OK", null);
+                    return;
+                }
+            }
+            
             Monitor monitorAsignado = null;
             for (Usuario u : cooperativa.getUsuarios()) {
                 if (u instanceof Monitor) {

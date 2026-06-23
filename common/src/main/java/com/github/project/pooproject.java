@@ -19,4 +19,16 @@ public class pooproject extends Lifecycle {
     public void runApp() {
         CoordinadorNavegacion.getInstancia().despacharPantallaRaiz();
     }
+    
+    @Override
+    public void stop() {
+        super.stop();
+        com.github.project.PersistenciaJson.guardarDatosJson(CoordinadorNavegacion.getInstancia().getCooperativaGlobal());
+    }
+    
+    @Override
+    public void destroy() {
+        super.destroy();
+        com.github.project.PersistenciaJson.guardarDatosJson(CoordinadorNavegacion.getInstancia().getCooperativaGlobal());
+    }
 }

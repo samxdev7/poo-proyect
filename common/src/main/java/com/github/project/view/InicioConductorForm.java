@@ -81,6 +81,11 @@ public class InicioConductorForm extends Form {
             Button btnFin = new Button("Finalizar Jornada");
             btnFin.setUIID("BotonLogin");
             btnFin.addActionListener(e -> {
+                for (com.github.project.model.PuntoControl pc : jActual.getRuta().getPuntosDeControl()) {
+                    if (!pc.isSuperado()) {
+                        pc.setHoraRealDePaso("NO MARCADO");
+                    }
+                }
                 jActual.registrarHoraDeFin();
                 cooperativa.getJornadasActivas().remove(jActual);
                 cooperativa.getJornadasFinalizadas().add(jActual);
