@@ -52,7 +52,7 @@ public class InicioGestorForm extends Form {
         Label lblTitulo = new Label("Resumen de Control Operativo:");
         lblTitulo.setUIID("SubtituloSeccion");
 
-        MultiButton jActivas = new MultiButton("Jornadas en Curso: " + cooperativa.getJornadasActivas().size());
+        MultiButton jActivas = new MultiButton("Jornadas en Curso " + cooperativa.getJornadasActivas().size());
         jActivas.setTextLine2("Flota total: " + cooperativa.getFlotas().size() + " | Empleados: " + cooperativa.getUsuarios().size());
         jActivas.addActionListener(e -> {
             com.codename1.ui.TextArea ta = new com.codename1.ui.TextArea(cooperativa.generarReporteGeneralDeActividad());
@@ -65,7 +65,7 @@ public class InicioGestorForm extends Form {
 
 
 
-        Label lblGestion = new Label("Panel de Decisiones Administrativas:");
+        Label lblGestion = new Label("Panel de Decisiones Administrativas");
         lblGestion.setUIID("SubtituloSeccion"); 
         
         Button btnRegistrar = new Button("Registrar Nuevo Personal");
