@@ -7,8 +7,8 @@ Form {
 CampoTexto {
     background-color: #FFFFFF;
     color: #1F2937;
-    margin: 2mm;
-    padding: 3.5mm;
+    margin: 1mm 2mm 5mm 2mm;
+    padding: 4.5mm;
     border: 1px solid #CBD5E1;
     border-radius: 3.5mm;
 }
@@ -110,8 +110,8 @@ InfraccionLinea2 {
 CampoTexto {
     background-color: #FFFFFF;
     color: #1E293B;
-    margin: 2mm;
-    padding: 3.5mm;
+    margin: 1mm 2mm 5mm 2mm;
+    padding: 4.5mm;
     border: 1px solid #E2E8F0;
     border-radius: 3.5mm;
 }
@@ -296,8 +296,8 @@ MultiButton.pressed {
 CampoTexto {
     background-color: #FFFFFF;
     color: #2C3E50;
-    margin: 2mm;
-    padding: 3.5mm;
+    margin: 1mm 2mm 5mm 2mm;
+    padding: 4.5mm;
     border: 1px solid #CBD5E1;
     border-radius: 3.5mm;
 }
@@ -351,7 +351,7 @@ Title {
 
 Label {
     color: #2C3E50;
-    margin: 1mm;
+    margin: 3mm 2mm 1mm 2mm;
 }
 
 /*Botones de confirmacion (si o no)*/
@@ -366,4 +366,23 @@ DialogCommandPressed {
 
 Button {
     color: #000000;
+}
+
+/* Forzar anchos grandes para Cuadros de Dialogo en móviles */
+Dialog {
+    background-color: #FFFFFF;
+    margin: 2mm 3mm 2mm 3mm;
+    padding: 2mm;
+    border: 1px solid #CBD5E1;
+    border-radius: 4mm;
+}
+
+DialogBody {
+    margin: 0;
+    padding: 2mm;
+}
+
+DialogContentPane {
+    margin: 0;
+    padding: 0;
 }

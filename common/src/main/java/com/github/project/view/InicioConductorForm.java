@@ -28,6 +28,7 @@ public class InicioConductorForm extends Form {
     }
 
     private void maquetarInterfazVisual() {
+        this.removeAllCommands();
         Toolbar tb = getToolbar();
         tb.setTitle("Conductor");
         tb.addMaterialCommandToLeftBar("", FontImage.MATERIAL_ACCOUNT_CIRCLE, e -> {
@@ -62,6 +63,9 @@ public class InicioConductorForm extends Form {
                 tarjetaJornada.add(new Label("Vehículo:")).add(new Label(jRef.getVehiculo().getPlaca()));
                 tarjetaJornada.add(new Label("Ruta asignada:")).add(new Label(jRef.getRuta().getNombreDeRuta()));
                 
+                Label lblViajesInfo = new Label(jRef.getCantidadDeViajes() + " completados");
+                tarjetaJornada.add(new Label("Viajes:")).add(lblViajesInfo);
+                
                 Label lblEstado = new Label("EN RUTA");
                 lblEstado.setUIID("EstadoActivo");
                 tarjetaJornada.add(new Label("Estado:")).add(lblEstado);
@@ -74,8 +78,27 @@ public class InicioConductorForm extends Form {
             Button btnViaje = new Button("Registrar Viaje Completo");
             btnViaje.setUIID("BotonLogin");
             btnViaje.addActionListener(e -> {
+                jActual.setCantidadDeViajes(jActual.getCantidadDeViajes() + 1);
+                // Search for the specific label to update
+                for (com.codename1.ui.Component comp : contenedorCentral) {
+                    if (comp instanceof Container) {
+                        Container c = (Container) comp;
+                        if ("TarjetaContenedor".equals(c.getUIID())) {
+                            // Find the Label with "completados" and update it
+                            for (com.codename1.ui.Component child : c) {
+                                if (child instanceof Label) {
+                                    Label l = (Label) child;
+                                    if (l.getText().contains("completados")) {
+                                        l.setText(jActual.getCantidadDeViajes() + " completados");
+                                        c.revalidate();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
                 conductor.reportarViajeCompleto(jActual.getNumeroDeJornada(), 15.5, 40);
-                Dialog.show("Viaje Registrado", "Cantidad de viajes: " + jActual.getCantidadDeViajes(), "OK", null);
+                Dialog.show("Viaje Registrado", "Cantidad total de viajes: " + jActual.getCantidadDeViajes(), "OK", null);
             });
             
             Button btnFin = new Button("Finalizar Jornada");
