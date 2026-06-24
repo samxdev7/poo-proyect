@@ -21,11 +21,11 @@ public class LoginForm extends Form {
     private void inicializarComponentes() {
         getToolbar().setHidden(true);
         
-        Label etiquetaTitulo = new Label("Inicie Sesión, Por Favor");
+        Label etiquetaTitulo = new Label("Inicie Sesión, por favor");
         // Reutiliza tu estilo de titulos para mantener la consistencia
         etiquetaTitulo.setUIID("SubtituloSeccion"); 
 
-        TextField campoUsuario = new TextField("", "Usuario (driver / monitor / gestor)");
+        TextField campoUsuario = new TextField("", "Usuario");
         TextField campoPassword = new TextField("", "Contraseña");
         campoPassword.setConstraint(TextField.PASSWORD);
         

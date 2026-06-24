@@ -1,34 +1,34 @@
 /*LoginForm*/
 Form {
-    background-color: #F1F5F9; 
+    background-color: #F0F4F8;
     padding: 8mm;
 }
 
 CampoTexto {
     background-color: #FFFFFF;
-    color: #1E293B;            
+    color: #1F2937;
     margin: 2mm;
-    padding: 3.5mm;            
-    border: 1px solid #CBD5E1; 
-    border-radius: 3.5mm;      
+    padding: 3.5mm;
+    border: 1px solid #CBD5E1;
+    border-radius: 3.5mm;
 }
 
 BotonLogin {
-    background-color: #0055A5; 
-    color: #FFFFFF;            
-    margin-top: 3mm;
-    padding: 3.5mm;
+    background-color: #2563EB;
+    color: #FFFFFF;
+    margin-top: 5mm;
+    padding: 3mm;
     border-radius: 3.5mm;
     font-weight: bold;
 }
 
 BotonLogin.pressed {
-    background-color: #004485; 
-    color: #FFFFFF;            
+    background-color: #1E40AF;
+    color: #FFFFFF;
 }
 
 LabelError {
-    color: #EF4444;            
+    color: #DC2626;
     margin-top: 2mm;
 }
 
@@ -40,26 +40,26 @@ Form {
 
 TarjetaContenedor {
     background-color: #FFFFFF;
-    margin: 3mm 2mm;          
-    padding: 4.5mm;            
-    border: 1px solid #E2E8F0; 
-    border-radius: 4mm;        
+    margin: 3mm 2mm;
+    padding: 4.5mm;
+    border: 1px solid #E2E8F0;
+    border-radius: 4mm;
 }
 
 EstadoActivo {
-    color: #10B981;            
+    color: #10B981;
     font-weight: bold;
 }
 
 NavInferior {
     background-color: #0F172A;
     padding: 3.5mm 2mm;
-    border-radius: 4mm 4mm 0mm 0mm; 
+    border-radius: 4mm 4mm 0mm 0mm;
 }
 
 Button {
     background-color: transparent;
-    color: #94A3B8;           
+    color: #94A3B8;
     margin: 1mm;
     padding: 2.5mm;
     font-weight: bold;
@@ -79,7 +79,7 @@ MultiButton {
 }
 
 MultiButton.pressed {
-    background-color: #F1F5F9;
+    background-color: #EFF6FF;
 }
 
 /*PantallaPerfilConductor*/
@@ -99,12 +99,12 @@ TarjetaInfraccion {
 InfraccionLinea1 {
     color: #1E293B;
     font-weight: bold;
-    font-size: 3mm;     
+    font-size: 3mm;
 }
 
 InfraccionLinea2 {
     color: #64748B;
-    font-size: 2.5mm;   
+    font-size: 2.5mm;
 }
 
 CampoTexto {
@@ -117,16 +117,16 @@ CampoTexto {
 }
 
 BotonLogin {
-    background-color: #0055A5;
+    background-color: #4F46E5;
     color: white;
     margin-top: 3mm;
-    padding: 3.5mm;
+    padding: 2.5mm;
     border-radius: 3.5mm;
     font-weight: bold;
 }
 
 BotonLogin.pressed {
-    background-color: #004485;
+    background-color: #4338CA;
 }
 
 LabelError {
@@ -155,7 +155,7 @@ Button.pressed {
 
 /*PantallaHistorialConductor*/
 Toolbar {
-    background-color: #0055A5;
+    background-color: #4F46E5;
 }
 
 Title {
@@ -181,37 +181,37 @@ MultiButtonLine2 {
 
 /*CoordinadorNavegacion*/
 HeaderConductor {
-    background-color: #0055A5;
+    background-color: #4F46E5;
     color: #FFFFFF;
     padding: 3.5mm;
     font-weight: bold;
 }
 
 HeaderMonitor {
-    background-color: #16A085;
+    background-color: #10B981;
     color: #FFFFFF;
     padding: 3.5mm;
     font-weight: bold;
 }
 
 HeaderGestor {
-    background-color: #2C3E50; 
+    background-color: #F59E0B;
     color: #FFFFFF;
     padding: 3.5mm;
     font-weight: bold;
 }
 
 BotonAccion {
-    background-color: #0055A5;
+    background-color: #4F46E5;
     color: #FFFFFF;
     margin: 2mm;
-    padding: 3.5mm;
+    padding: 2.5mm;
     border-radius: 3mm;
     font-weight: bold;
 }
 
 BotonAccion.pressed {
-    background-color: #004485;
+    background-color: #4338CA;
 }
 
 BadgeEstado {
@@ -223,13 +223,29 @@ BadgeEstado {
 
 /*InicioGestorForm*/
 ToolbarGestor {
-    background-color: #2C3E50;
+    background-color: #2563EB;
 }
 
 SubtituloSeccion {
     color: #2C3E50;
     font-weight: bold;
     margin: 3mm 2mm;
+    font-size: 3.3mm;
+}
+
+BotonMenuGestorLargo {
+    background-color: #2563EB;
+    color: #FFFFFF;
+    margin-top: 2mm;
+    padding: 2mm;
+    border-radius: 3.5mm;
+    font-weight: bold;
+    font-size: 3mm;
+}
+
+BotonMenuGestorLargo.pressed {
+    background-color: #1E40AF;
+    color: #FFFFFF;
 }
 
 SideMenuPanel {
@@ -242,18 +258,18 @@ SideMenuPanel {
 
 SideCommand {
     background-color: transparent;
-    color: #2C3E50;
+    color: #FFFFFF;
     font-weight: bold;
     padding: 3.5mm;
 }
 
 SideCommand.pressed {
-    background-color: #F1F5F9;
+    background-color: #FEF3C7;
 }
 
 /*InicioMonitorForm*/
 Form {
-    background-color: #F4F9F6;
+    background-color: #BAE6FD;
     padding: 4mm;
 }
 
@@ -287,20 +303,20 @@ CampoTexto {
 }
 
 BotonLogin {
-    background-color: #16A085;
+    background-color: #2563EB;
     color: white;
     margin-top: 3mm;
-    padding: 3.5mm;
+    padding: 2.5mm;
     border-radius: 3.5mm;
     font-weight: bold;
 }
 
 BotonLogin.pressed {
-    background-color: #117A65;
+    background-color: #059669;
 }
 
 LabelError {
-    color: #D9381E;
+    color: #EF4444;
     margin-top: 2mm;
 }
 
@@ -324,7 +340,7 @@ Button.pressed {
 }
 
 Toolbar {
-    background-color: #16A085;
+    background-color: #2563EB;
 }
 
 Title {
