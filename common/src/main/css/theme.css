@@ -372,22 +372,4 @@ DialogCommandPressed {
 Button {
     color: #000000;
 }
-
-/* Forzar anchos grandes para Cuadros de Dialogo en móviles */
-Dialog {
-    background-color: #FFFFFF;
-    margin: 2mm 3mm 2mm 3mm;
-    padding: 2mm;
-    border: 1px solid #CBD5E1;
-    border-radius: 4mm;
-}
-
-DialogBody {
-    margin: 0;
-    padding: 2mm;
-}
-
-DialogContentPane {
-    margin: 0;
-    padding: 0;
-}
+

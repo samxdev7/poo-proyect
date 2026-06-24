@@ -53,15 +53,13 @@ public class InicioGestorForm extends Form {
         tb.setUIID("ToolbarGestor"); 
         tb.setTitle("Cooperativa");
         
-        if (!menuConstruido) {
-            tb.addMaterialCommandToLeftBar("", FontImage.MATERIAL_ACCOUNT_CIRCLE, e -> {
-                new PantallaPerfilConductor().show();
-            });
-            
-            tb.addMaterialCommandToRightBar("", FontImage.MATERIAL_EXIT_TO_APP, e -> {
-                CoordinadorNavegacion.getInstancia().cerrarSesion();
-            });
-        }
+        tb.addMaterialCommandToLeftBar("", FontImage.MATERIAL_ACCOUNT_CIRCLE, e -> {
+            new PantallaPerfilConductor().show();
+        });
+        
+        tb.addMaterialCommandToRightBar("", FontImage.MATERIAL_EXIT_TO_APP, e -> {
+            CoordinadorNavegacion.getInstancia().cerrarSesion();
+        });
 
         Container centro = new Container(BoxLayout.y());
         centro.setScrollableY(true);
@@ -112,15 +110,12 @@ public class InicioGestorForm extends Form {
         centro.addAll(lblTitulo, jActivas, lblGestion, btnRegistrar, btnModificar, btnConsultar, btnJornada, btnFlota, btnRutas);
         this.add(BorderLayout.CENTER, centro);
 
-        if (!menuConstruido) {
-            tb.addMaterialCommandToSideMenu("Registrar Usuario", 
-                FontImage.MATERIAL_PERSON_ADD, e -> ejecutarRegistrarUsuario());
-            tb.addMaterialCommandToSideMenu("Modificar Usuario", 
-                FontImage.MATERIAL_EDIT, e -> ejecutarModificarUsuario());
-            tb.addMaterialCommandToSideMenu("Gestionar Flota", 
-                FontImage.MATERIAL_DIRECTIONS_BUS, e -> ejecutarGestionVehiculo());
-            menuConstruido = true;
-        }
+        tb.addMaterialCommandToSideMenu("Registrar Usuario", 
+            FontImage.MATERIAL_PERSON_ADD, e -> ejecutarRegistrarUsuario());
+        tb.addMaterialCommandToSideMenu("Modificar Usuario", 
+            FontImage.MATERIAL_EDIT, e -> ejecutarModificarUsuario());
+        tb.addMaterialCommandToSideMenu("Gestionar Flota", 
+            FontImage.MATERIAL_DIRECTIONS_BUS, e -> ejecutarGestionVehiculo());
     }
 
     private void ejecutarRegistrarUsuario() {
