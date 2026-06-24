@@ -1,97 +1,353 @@
-/** Define Theme Constants here */
-#Constants {
-    includeNativeBool: true;
-    defaultSourceDPIInt: "0";
-    useLargerTextScaleBool: true;
-}
-
-/** Style for Button class */
-Button {
-    font-family: "native:MainLight";
-    font-size: 3mm;
-}
-
-/** Style for App Title Bar Text */
-Title {
-    font-family: "native:MainLight";
-    font-size: 6mm;
-}
-
-/** Style for Dialog body */
-DialogBody {
-    font-family: "native:MainLight";
-    font-size: 2.8mm;
-}
-
-/** Style for Dialog title bar text */
-DialogTitle {
-    font-family: "native:MainLight";
-    font-size: 4.5mm;
-}
-
-/** Style for the side menu */
-SideNavigationPanel {
-    background: white;
-    padding: 2mm 1mm 1mm 1mm;
-}
-
-@media platform-ios {
-    /** iOS Only styles for side menu. */
-    SideNavigationPanel {
-        /** Extra top padding to deal with notch on iPhoneX */
-        padding: 6mm 1mm 1mm 1mm;
-    }
-}
-
-/** Style for commands in side menu. */
-SideCommand {
-    padding: 1mm;
-    border: none;
-    text-decoration: none;
-    color: black;
-    font-family: "native:MainLight";
-    font-size: 4mm;
-    border-bottom: 2px solid #cccccc;
-}
-
-/* Dark mode example - uncomment to override styles when the
- * device is in dark mode:
- *
- * @media (prefers-color-scheme: dark) {
- *     SideNavigationPanel {
- *         background: #0f172a;
- *     }
- *     SideCommand {
- *         color: #e2e8f0;
- *         background: #0f172a;
- *         border-bottom: 2px solid #334155;
- *     }
- * }
- */
-
-
-/* Initializr Theme Overrides */
+/*LoginForm*/
 Form {
-    background-color: #0f172a;
-    color: #e2e8f0;
+    background-color: #F1F5F9; 
+    padding: 8mm;
 }
-Toolbar {
-    background-color: #0f172a;
-    border: none;
+
+CampoTexto {
+    background-color: #FFFFFF;
+    color: #1E293B;            
+    margin: 2mm;
+    padding: 3.5mm;            
+    border: 1px solid #CBD5E1; 
+    border-radius: 3.5mm;      
 }
-Title, TitleCommand, Command, OverflowCommand {
-    color: #e2e8f0;
+
+BotonLogin {
+    background-color: #0055A5; 
+    color: #FFFFFF;            
+    margin-top: 3mm;
+    padding: 3.5mm;
+    border-radius: 3.5mm;
+    font-weight: bold;
 }
-DialogBody, DialogTitle {
-    color: #e2e8f0;
+
+BotonLogin.pressed {
+    background-color: #004485; 
+    color: #FFFFFF;            
 }
+
+LabelError {
+    color: #EF4444;            
+    margin-top: 2mm;
+}
+
+/*InicioConductorForm*/
+Form {
+    background-color: #F8FAFC;
+    padding: 4mm;
+}
+
+TarjetaContenedor {
+    background-color: #FFFFFF;
+    margin: 3mm 2mm;          
+    padding: 4.5mm;            
+    border: 1px solid #E2E8F0; 
+    border-radius: 4mm;        
+}
+
+EstadoActivo {
+    color: #10B981;            
+    font-weight: bold;
+}
+
+NavInferior {
+    background-color: #0F172A;
+    padding: 3.5mm 2mm;
+    border-radius: 4mm 4mm 0mm 0mm; 
+}
+
 Button {
-    color: #e2e8f0;
-    background-color: #1f2937;
-    border: 1px solid #475569;
+    background-color: transparent;
+    color: #94A3B8;           
+    margin: 1mm;
+    padding: 2.5mm;
+    font-weight: bold;
 }
+
 Button.pressed {
-    color: #e2e8f0;
-    background-color: #334155;
-    border: 1px solid #64748b;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #FFFFFF;
+}
+
+MultiButton {
+    background-color: #FFFFFF;
+    margin: 3mm 2mm;
+    padding: 4.5mm;
+    border: 1px solid #E2E8F0;
+    border-radius: 4mm;
+}
+
+MultiButton.pressed {
+    background-color: #F1F5F9;
+}
+
+/*PantallaPerfilConductor*/
+Form {
+    background-color: #F8FAFC;
+    padding: 4mm;
+}
+
+TarjetaInfraccion {
+    background-color: #FFFFFF;
+    margin: 2.5mm 1.5mm;
+    padding: 4mm;
+    border: 1px solid #E2E8F0;
+    border-radius: 3.5mm;
+}
+
+InfraccionLinea1 {
+    color: #1E293B;
+    font-weight: bold;
+    font-size: 3mm;     
+}
+
+InfraccionLinea2 {
+    color: #64748B;
+    font-size: 2.5mm;   
+}
+
+CampoTexto {
+    background-color: #FFFFFF;
+    color: #1E293B;
+    margin: 2mm;
+    padding: 3.5mm;
+    border: 1px solid #E2E8F0;
+    border-radius: 3.5mm;
+}
+
+BotonLogin {
+    background-color: #0055A5;
+    color: white;
+    margin-top: 3mm;
+    padding: 3.5mm;
+    border-radius: 3.5mm;
+    font-weight: bold;
+}
+
+BotonLogin.pressed {
+    background-color: #004485;
+}
+
+LabelError {
+    color: #EF4444;
+    margin-top: 2mm;
+}
+
+NavInferior {
+    background-color: #0F172A;
+    padding: 3.5mm 2mm;
+    border-radius: 4mm 4mm 0mm 0mm;
+}
+
+Button {
+    background-color: transparent;
+    color: #94A3B8;
+    margin: 1mm;
+    padding: 2.5mm;
+    font-weight: bold;
+}
+
+Button.pressed {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #FFFFFF;
+}
+
+/*PantallaHistorialConductor*/
+Toolbar {
+    background-color: #0055A5;
+}
+
+Title {
+    background-color: transparent;
+    color: #FFFFFF;
+    font-weight: bold;
+}
+
+TitleCommand {
+    color: #FFFFFF;
+    background-color: transparent;
+    padding: 2mm;
+}
+
+MultiButtonLine1 {
+    color: #1E293B;
+    font-weight: bold;
+}
+
+MultiButtonLine2 {
+    color: #64748B;
+}
+
+/*CoordinadorNavegacion*/
+HeaderConductor {
+    background-color: #0055A5;
+    color: #FFFFFF;
+    padding: 3.5mm;
+    font-weight: bold;
+}
+
+HeaderMonitor {
+    background-color: #16A085;
+    color: #FFFFFF;
+    padding: 3.5mm;
+    font-weight: bold;
+}
+
+HeaderGestor {
+    background-color: #2C3E50; 
+    color: #FFFFFF;
+    padding: 3.5mm;
+    font-weight: bold;
+}
+
+BotonAccion {
+    background-color: #0055A5;
+    color: #FFFFFF;
+    margin: 2mm;
+    padding: 3.5mm;
+    border-radius: 3mm;
+    font-weight: bold;
+}
+
+BotonAccion.pressed {
+    background-color: #004485;
+}
+
+BadgeEstado {
+    background-color: #E2E8F0;
+    color: #4A5568;
+    padding: 2mm;
+    border-radius: 1.5mm;
+}
+
+/*InicioGestorForm*/
+ToolbarGestor {
+    background-color: #2C3E50;
+}
+
+SubtituloSeccion {
+    color: #2C3E50;
+    font-weight: bold;
+    margin: 3mm 2mm;
+}
+
+SideMenuPanel {
+    background-color: #FFFFFF;
+    margin: 2mm;
+    padding: 4mm;
+    border: 1px solid #E2E8F0;
+    border-radius: 4mm;
+}
+
+SideCommand {
+    background-color: transparent;
+    color: #2C3E50;
+    font-weight: bold;
+    padding: 3.5mm;
+}
+
+SideCommand.pressed {
+    background-color: #F1F5F9;
+}
+
+/*InicioMonitorForm*/
+Form {
+    background-color: #F4F9F6;
+    padding: 4mm;
+}
+
+TarjetaContenedor {
+    background-color: #FFFFFF;
+    margin: 3mm 2mm;
+    padding: 4.5mm;
+    border: 1px solid #E2E8F0;
+    border-radius: 4mm;
+}
+
+MultiButton {
+    background-color: #FFFFFF;
+    margin: 3mm 2mm;
+    padding: 4.5mm;
+    border: 1px solid #E2E8F0;
+    border-radius: 4mm;
+}
+
+MultiButton.pressed {
+    background-color: #F1F5F9;
+}
+
+CampoTexto {
+    background-color: #FFFFFF;
+    color: #2C3E50;
+    margin: 2mm;
+    padding: 3.5mm;
+    border: 1px solid #CBD5E1;
+    border-radius: 3.5mm;
+}
+
+BotonLogin {
+    background-color: #16A085;
+    color: white;
+    margin-top: 3mm;
+    padding: 3.5mm;
+    border-radius: 3.5mm;
+    font-weight: bold;
+}
+
+BotonLogin.pressed {
+    background-color: #117A65;
+}
+
+LabelError {
+    color: #D9381E;
+    margin-top: 2mm;
+}
+
+NavInferior {
+    background-color: #115E59;
+    padding: 3.5mm 2mm;
+    border-radius: 4mm 4mm 0mm 0mm;
+}
+
+Button {
+    background-color: transparent;
+    color: #CCFBF1;
+    margin: 1mm;
+    padding: 2.5mm;
+    font-weight: bold;
+}
+
+Button.pressed {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #FFFFFF;
+}
+
+Toolbar {
+    background-color: #16A085;
+}
+
+Title {
+    background-color: transparent;
+    color: #FFFFFF;
+    font-weight: bold;
+}
+
+Label {
+    color: #2C3E50;
+    margin: 1mm;
+}
+
+/*Botones de confirmacion (si o no)*/
+DialogButton,
+DialogButtonFocus,
+DialogButtonPressed,
+DialogCommand,
+DialogCommandFocus,
+DialogCommandPressed {
+    color: #000000;
+}
+
+Button {
+    color: #000000;
 }
