@@ -58,7 +58,8 @@ public class ConsultarUsuariosForm extends Form {
                 tarjeta.add(new Label("Estado:")).add(lblEstado);
 
                 if (u instanceof Conductor) {
-                    tarjeta.add(new Label("Licencia:")).add(new Label(((Conductor) u).getLicenciaDeConducir()));
+                    Conductor c = (Conductor) u;
+                    tarjeta.add(new Label("Licencia:")).add(new Label(c.getLicenciaDeConducir()));
                 } else if (u instanceof Monitor) {
                     tarjeta.add(new Label("ID Monitor:")).add(new Label(((Monitor) u).getIdMonitor()));
                 } else if (u instanceof GestorCooperativa) {
@@ -66,6 +67,20 @@ public class ConsultarUsuariosForm extends Form {
                 }
 
                 centro.add(tarjeta);
+
+                if (u instanceof Conductor) {
+                    Conductor c = (Conductor) u;
+                    com.codename1.ui.Button btnDetalle = new com.codename1.ui.Button("Inspeccionar Conductor");
+                    btnDetalle.setUIID("BotonLogin");
+                    btnDetalle.addActionListener(evt -> {
+                        String ficha = c.mostrarInfoDeConductor();
+                        if (c.tieneInfraccionesGraves()) {
+                            ficha += "\n\n⚠️ ATENCIÓN: El conductor registra infracciones GRAVES en su historial.";
+                        }
+                        com.codename1.ui.Dialog.show("Inspección de " + c.getNombre(), ficha, "Cerrar", null);
+                    });
+                    centro.add(btnDetalle);
+                }
             }
         }
 

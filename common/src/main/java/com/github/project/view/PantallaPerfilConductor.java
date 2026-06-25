@@ -34,12 +34,23 @@ public class PantallaPerfilConductor extends Form {
             String rol = usuarioActivo.getTipoUsuario().toUpperCase();
             
             if ("CONDUCTOR".equals(rol)) {
-                String licencia = ((Conductor) usuarioActivo).getLicenciaDeConducir();
+                Conductor c = (Conductor) usuarioActivo;
                 tarjetaDatos.addAll(
-                    new Label("Conductor: " + usuarioActivo.getNombre()), 
-                    new Label("Licencia: " + (licencia != null ? licencia : "No registrada")), 
-                    new Label("Estado Operativo: " + (usuarioActivo.isActivo() ? "Activo" : "Inactivo"))
+                    new Label("Conductor: " + c.getNombre()), 
+                    new Label("Estado Operativo: " + (c.isActivo() ? "Activo" : "Inactivo"))
                 );
+                
+                com.codename1.ui.TextArea txtInfo = new com.codename1.ui.TextArea(c.mostrarInfoDeConductor());
+                txtInfo.setEditable(false);
+                txtInfo.setUIID("Label");
+                txtInfo.getAllStyles().setBgTransparency(0);
+                tarjetaDatos.add(txtInfo);
+
+                if (c.tieneInfraccionesGraves()) {
+                    Label alertLabel = new Label("¡ATENCIÓN! Posee infracciones graves.");
+                    alertLabel.setUIID("EstadoInactivo"); 
+                    tarjetaDatos.add(alertLabel);
+                }
             } else if ("MONITOR".equals(rol)) {
                 String idEmpleado = ((Monitor) usuarioActivo).getIdMonitor();
                 tarjetaDatos.addAll(
