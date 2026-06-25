@@ -83,27 +83,53 @@ public class InicioConductorForm extends Form {
             Button btnViaje = new Button("Registrar Viaje Completo");
             btnViaje.setUIID("BotonLogin");
             btnViaje.addActionListener(e -> {
-                jActual.setCantidadDeViajes(jActual.getCantidadDeViajes() + 1);
-                // Search for the specific label to update
-                for (Component comp : contenedorCentral) {
-                    if (comp instanceof Container) {
-                        Container c = (Container) comp;
-                        if ("TarjetaContenedor".equals(c.getUIID())) {
-                            // Find the Label with "completados" and update it
-                            for (Component child : c) {
-                                if (child instanceof Label) {
-                                    Label l = (Label) child;
-                                    if (l.getText().contains("completados")) {
-                                        l.setText(jActual.getCantidadDeViajes() + " completados");
-                                        c.revalidate();
-                                    }
-                                }
-                            }
-                        }
+                Form fViaje = new Form("Datos del Viaje", new BorderLayout());
+                fViaje.setUIID("FormConductor");
+                fViaje.getToolbar().addMaterialCommandToLeftBar("", FontImage.MATERIAL_ARROW_BACK, evt -> this.showBack());
+
+                com.codename1.ui.TextField txtKm = new com.codename1.ui.TextField("", "Kilómetros recorridos");
+                com.codename1.ui.TextField txtPasajeros = new com.codename1.ui.TextField("", "Cantidad de pasajeros");
+                
+                txtKm.setConstraint(com.codename1.ui.TextField.DECIMAL);
+                txtPasajeros.setConstraint(com.codename1.ui.TextField.NUMERIC);
+                
+                txtKm.setUIID("CampoTexto");
+                txtPasajeros.setUIID("CampoTexto");
+
+                Container bodyViaje = BoxLayout.encloseY(
+                    new Label("Kilómetros (km):"), txtKm,
+                    new Label("Pasajeros Transportados:"), txtPasajeros
+                );
+                bodyViaje.setScrollableY(true);
+                
+                Button btnGuardarViaje = new Button("Guardar Viaje");
+                btnGuardarViaje.setUIID("BotonLogin");
+                btnGuardarViaje.addActionListener(evt -> {
+                    if (txtKm.getText().trim().isEmpty() || txtPasajeros.getText().trim().isEmpty()) {
+                        Dialog.show("Error", "Debe llenar ambos campos.", "OK", null);
+                        return;
                     }
-                }
-                conductor.reportarViajeCompleto(jActual.getNumeroDeJornada(), 15.5, 40);
-                Dialog.show("Viaje Registrado", "Cantidad total de viajes: " + jActual.getCantidadDeViajes(), "OK", null);
+                    try {
+                        double km = Double.parseDouble(txtKm.getText().trim());
+                        int pasajeros = Integer.parseInt(txtPasajeros.getText().trim());
+                        
+                        jActual.setCantidadDeViajes(jActual.getCantidadDeViajes() + 1);
+                        conductor.reportarViajeCompleto(jActual.getNumeroDeJornada(), km, pasajeros);
+                        
+                        this.removeAll();
+                        maquetarInterfazVisual();
+                        this.revalidate();
+                        
+                        this.showBack();
+                        Dialog.show("Viaje Registrado", "Cantidad total de viajes: " + jActual.getCantidadDeViajes(), "OK", null);
+                    } catch (NumberFormatException ex) {
+                        Dialog.show("Error", "Ingrese valores numéricos válidos.", "OK", null);
+                    }
+                });
+
+                fViaje.add(BorderLayout.CENTER, bodyViaje);
+                fViaje.add(BorderLayout.SOUTH, btnGuardarViaje);
+                fViaje.show();
             });
             
             Button btnFin = new Button("Finalizar Jornada");
