@@ -8,8 +8,9 @@ import com.codename1.ui.Label;
 import com.codename1.ui.Container;
 import com.codename1.ui.Button; 
 import com.codename1.ui.Dialog;
-import com.codename1.components.MultiButton;
 import com.github.project.model.Usuario;
+import com.github.project.model.Conductor;
+import com.github.project.model.Monitor;
 
 public class PantallaPerfilConductor extends Form {
     public PantallaPerfilConductor() {
@@ -33,14 +34,14 @@ public class PantallaPerfilConductor extends Form {
             String rol = usuarioActivo.getTipoUsuario().toUpperCase();
             
             if ("CONDUCTOR".equals(rol)) {
-                String licencia = ((com.github.project.model.Conductor) usuarioActivo).getLicenciaDeConducir();
+                String licencia = ((Conductor) usuarioActivo).getLicenciaDeConducir();
                 tarjetaDatos.addAll(
                     new Label("Conductor: " + usuarioActivo.getNombre()), 
                     new Label("Licencia: " + (licencia != null ? licencia : "No registrada")), 
                     new Label("Estado Operativo: " + (usuarioActivo.isActivo() ? "Activo" : "Inactivo"))
                 );
             } else if ("MONITOR".equals(rol)) {
-                String idEmpleado = ((com.github.project.model.Monitor) usuarioActivo).getIdMonitor();
+                String idEmpleado = ((Monitor) usuarioActivo).getIdMonitor();
                 tarjetaDatos.addAll(
                     new Label("Monitor: " + usuarioActivo.getNombre()), 
                     new Label("ID Empleado: " + (idEmpleado != null ? idEmpleado : "No registrado")), 

@@ -10,7 +10,11 @@ import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.ui.table.TableLayout;
 import com.codename1.ui.Dialog;
-
+import com.codename1.ui.Component;
+import java.util.List;
+import java.util.ArrayList;
+import com.github.project.model.Infraccion;
+import com.github.project.model.Jornada;
 import com.github.project.model.Conductor;
 import com.github.project.model.Cooperativa;
 
@@ -42,8 +46,8 @@ public class InicioConductorForm extends Form {
         Container contenedorCentral = new Container(BoxLayout.y());
         contenedorCentral.setScrollableY(true);
 
-        java.util.List<com.github.project.model.Jornada> misJornadas = new java.util.ArrayList<>();
-        for (com.github.project.model.Jornada j : cooperativa.getJornadasActivas()) {
+        List<Jornada> misJornadas = new ArrayList<>();
+        for (Jornada j : cooperativa.getJornadasActivas()) {
             if (j.getConductor().equals(conductor)) {
                 misJornadas.add(j);
             }
@@ -56,7 +60,7 @@ public class InicioConductorForm extends Form {
             lblVacio.setUIID("SubtituloSeccion");
             contenedorCentral.add(lblVacio);
         } else {
-            for (com.github.project.model.Jornada jRef : misJornadas) {
+            for (Jornada jRef : misJornadas) {
                 Container tarjetaJornada = new Container(new TableLayout(3, 2));
                 tarjetaJornada.setUIID("TarjetaContenedor");
                 
@@ -73,19 +77,19 @@ public class InicioConductorForm extends Form {
                 contenedorCentral.add(tarjetaJornada);
             }
             
-            com.github.project.model.Jornada jActual = misJornadas.get(0);
+            Jornada jActual = misJornadas.get(0);
 
             Button btnViaje = new Button("Registrar Viaje Completo");
             btnViaje.setUIID("BotonLogin");
             btnViaje.addActionListener(e -> {
                 jActual.setCantidadDeViajes(jActual.getCantidadDeViajes() + 1);
                 // Search for the specific label to update
-                for (com.codename1.ui.Component comp : contenedorCentral) {
+                for (Component comp : contenedorCentral) {
                     if (comp instanceof Container) {
                         Container c = (Container) comp;
                         if ("TarjetaContenedor".equals(c.getUIID())) {
                             // Find the Label with "completados" and update it
-                            for (com.codename1.ui.Component child : c) {
+                            for (Component child : c) {
                                 if (child instanceof Label) {
                                     Label l = (Label) child;
                                     if (l.getText().contains("completados")) {
@@ -126,11 +130,11 @@ public class InicioConductorForm extends Form {
         lblHistorial.setUIID("SubtituloSeccion");
         contenedorCentral.add(lblHistorial);
 
-        java.util.List<com.github.project.model.Infraccion> misInfracciones = conductor.getInfracciones();
+        List<Infraccion> misInfracciones = conductor.getInfracciones();
         if (misInfracciones == null || misInfracciones.isEmpty()) {
             contenedorCentral.add(new Label("No tienes infracciones registradas. ¡Buen trabajo!"));
         } else {
-            for (com.github.project.model.Infraccion inf : misInfracciones) {
+            for (Infraccion inf : misInfracciones) {
                 Container tarjetaInfraccion = new Container(BoxLayout.y());
                 tarjetaInfraccion.setUIID("TarjetaInfraccion"); 
 

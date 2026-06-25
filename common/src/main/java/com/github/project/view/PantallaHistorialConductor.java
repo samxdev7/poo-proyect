@@ -1,11 +1,17 @@
 package com.github.project.view;
 
 import com.codename1.ui.Form;
+import com.codename1.ui.TextArea;
 import com.codename1.ui.Toolbar;
 import com.codename1.ui.FontImage;
 import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.ui.Container;
 import com.codename1.ui.Label;
+import com.github.project.model.Usuario;
+import com.github.project.model.Conductor;
+import com.github.project.model.Jornada;
+import com.github.project.model.PuntoControl;
+import java.util.List;
 
 public class PantallaHistorialConductor extends Form {
     public PantallaHistorialConductor() {
@@ -16,21 +22,21 @@ public class PantallaHistorialConductor extends Form {
             CoordinadorNavegacion.getInstancia().despacharPantallaRaiz();
         });
 
-        com.github.project.model.Usuario u = CoordinadorNavegacion.getInstancia().getUsuarioAutenticado();
-        if (!(u instanceof com.github.project.model.Conductor)) {
+        Usuario u = CoordinadorNavegacion.getInstancia().getUsuarioAutenticado();
+        if (!(u instanceof Conductor)) {
             this.add(new Label("No eres un conductor."));
             return;
         }
 
-        com.github.project.model.Conductor conductor = (com.github.project.model.Conductor) u;
-        java.util.List<com.github.project.model.Jornada> jornadas = conductor.getJornadasRealizadas();
+        Conductor conductor = (Conductor) u;
+        List<Jornada> jornadas = conductor.getJornadasRealizadas();
 
         if (jornadas == null || jornadas.isEmpty()) {
             this.add(new Label("Aún no tienes jornadas finalizadas."));
             return;
         }
 
-        for (com.github.project.model.Jornada j : jornadas) {
+        for (Jornada j : jornadas) {
             Container itemHistorial = new Container(BoxLayout.y());
             itemHistorial.setUIID("MultiButton"); 
             itemHistorial.setLeadComponent(null); 
@@ -53,15 +59,15 @@ public class PantallaHistorialConductor extends Form {
                 sb.append("--- PUNTOS DE CONTROL ---\n");
                 boolean hayNoMarcados = false;
                 
-                com.codename1.ui.Form detalleForm = new com.codename1.ui.Form("Detalle de Jornada", BoxLayout.y());
+                Form detalleForm = new Form("Detalle de Jornada", BoxLayout.y());
                 detalleForm.getToolbar().addMaterialCommandToLeftBar("", FontImage.MATERIAL_ARROW_BACK, evt -> this.showBack());
                 
-                com.codename1.ui.TextArea txtCabecera = new com.codename1.ui.TextArea(sb.toString());
+                TextArea txtCabecera = new TextArea(sb.toString());
                 txtCabecera.setEditable(false);
                 txtCabecera.setUIID("Label");
                 detalleForm.add(txtCabecera);
 
-                for (com.github.project.model.PuntoControl pc : j.getRuta().getPuntosDeControl()) {
+                for (PuntoControl pc : j.getRuta().getPuntosDeControl()) {
                     Label lblPunto = new Label(pc.getUbicacion() + " (" + pc.getHoraProgramada() + ")");
                     if (pc.isSuperado()) {
                         lblPunto.setText(lblPunto.getText() + " - MARCADO");
