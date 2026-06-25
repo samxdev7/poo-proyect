@@ -17,6 +17,7 @@ import com.github.project.model.Infraccion;
 import com.github.project.model.Jornada;
 import com.github.project.model.Conductor;
 import com.github.project.model.Cooperativa;
+import com.github.project.model.PuntoControl;
 
 public class InicioConductorForm extends Form {
 
@@ -108,7 +109,7 @@ public class InicioConductorForm extends Form {
             Button btnFin = new Button("Finalizar Jornada");
             btnFin.setUIID("BotonLogin");
             btnFin.addActionListener(e -> {
-                for (com.github.project.model.PuntoControl pc : jActual.getRuta().getPuntosDeControl()) {
+                for (PuntoControl pc : jActual.getRuta().getPuntosDeControl()) {
                     if (!pc.isSuperado()) {
                         pc.setHoraRealDePaso("NO MARCADO");
                     }
@@ -116,6 +117,12 @@ public class InicioConductorForm extends Form {
                 jActual.registrarHoraDeFin();
                 cooperativa.getJornadasActivas().remove(jActual);
                 cooperativa.getJornadasFinalizadas().add(jActual);
+                
+                // Add the journey to the conductor's personal history
+                List<Jornada> historial = new ArrayList<>(conductor.getJornadasRealizadas());
+                historial.add(jActual);
+                conductor.setJornadasRealizadas(historial);
+                
                 Dialog.show("Finalizada", "Jornada terminada correctamente.", "OK", null);
                 this.removeAll();
                 maquetarInterfazVisual();
@@ -124,6 +131,14 @@ public class InicioConductorForm extends Form {
             
             navInferior.addAll(btnViaje, btnFin);
         }
+
+        // Botón para acceder al historial de jornadas
+        Button btnHistorialJornadas = new Button("Ver Historial de Jornadas");
+        btnHistorialJornadas.setUIID("BotonLogin");
+        btnHistorialJornadas.addActionListener(e -> {
+            new PantallaHistorialConductor().show();
+        });
+        contenedorCentral.add(btnHistorialJornadas);
 
         // Sección de Historial Integrado
         Label lblHistorial = new Label("Mi Historial de Infracciones:");
