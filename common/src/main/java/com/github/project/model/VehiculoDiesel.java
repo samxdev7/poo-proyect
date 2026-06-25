@@ -27,6 +27,17 @@ public class VehiculoDiesel extends Vehiculo {
         this.nivelDeCombustible = nivelDeCombustible;
     }
 
+    /**
+     * Devuelve la cantidad exacta de combustible disponible como representación de su autonomía.
+     * Al no existir una métrica de rendimiento (km/L) en el diseño UML, la autonomía
+     * real funcional se mide por su capacidad restante neta en litros.
+     *
+     * @return La autonomía expresada en litros.
+     */
+    public double calcularAutonomiaRestante() {
+        return nivelDeCombustible;
+    }
+
     public String getIdVehiculoDiesel() { return idVehiculoDiesel; }
     public void setIdVehiculoDiesel(String idVehiculoDiesel) { this.idVehiculoDiesel = idVehiculoDiesel; }
 

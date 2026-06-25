@@ -33,6 +33,14 @@ public class Monitor extends Usuario {
      * @param idControl El identificador del punto de control.
      */
     public void reportarResultadoDeControl(String idJornada, String idControl) {
+        if (getCooperativa() != null) {
+            for (Jornada j : getCooperativa().getJornadasActivas()) {
+                if (j.getNumeroDeJornada().equals(idJornada)) {
+                    j.getRuta().registrarPasoPorControl(idControl, "Ahora");
+                    break;
+                }
+            }
+        }
     }
 
     /**
@@ -46,7 +54,18 @@ public class Monitor extends Usuario {
      * @return La instancia de la infracción generada.
      */
     public Infraccion registrarInfraccion(String licenciaDeConducir, String nivel, String descripcion, String idJornada, String idControl) {
-        return null;
+        Infraccion inf = new Infraccion("I-" + System.currentTimeMillis(), descripcion, nivel, "Ahora", idJornada, idMonitor);
+        if (getCooperativa() != null) {
+            for (Conductor c : getCooperativa().getConductores()) {
+                if (c.getLicenciaDeConducir().equals(licenciaDeConducir)) {
+                    List<Infraccion> lista = new ArrayList<>(c.getInfracciones());
+                    lista.add(inf);
+                    c.setInfracciones(lista);
+                    break;
+                }
+            }
+        }
+        return inf;
     }
 
     /**
@@ -75,6 +94,24 @@ public class Monitor extends Usuario {
      * @return El retraso calculado en minutos.
      */
     public int calcularRetrasoDeControl(String idControl) {
+        for (PuntoControl pc : puntosDeControlMarcados) {
+            if (pc.getIdControl().equals(idControl)) {
+                String programada = pc.getHoraProgramada();
+                String real = pc.getHoraRealDePaso();
+                if (programada == null || real == null || real.equals("NO MARCADO")) {
+                    return 0; 
+                }
+                try {
+                    String[] pParts = programada.split(":");
+                    String[] rParts = real.split(":");
+                    int pMin = Integer.parseInt(pParts[0].trim()) * 60 + Integer.parseInt(pParts[1].trim());
+                    int rMin = Integer.parseInt(rParts[0].trim()) * 60 + Integer.parseInt(rParts[1].trim());
+                    return rMin - pMin;
+                } catch (Exception e) {
+                    return 0;
+                }
+            }
+        }
         return 0;
     }
 

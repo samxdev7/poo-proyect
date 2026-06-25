@@ -47,7 +47,25 @@ public class Ruta {
      * 1. Simula el cálculo del retraso comparando la hora.
      */
     public int calcularRetraso(String idControl) {
-        return 0; // Implementación real dependerá de parsing de fechas
+        for (PuntoControl pc : puntosDeControl) {
+            if (pc.getIdControl().equals(idControl)) {
+                String programada = pc.getHoraProgramada();
+                String real = pc.getHoraRealDePaso();
+                if (programada == null || real == null || real.equals("NO MARCADO")) {
+                    return 0; 
+                }
+                try {
+                    String[] pParts = programada.split(":");
+                    String[] rParts = real.split(":");
+                    int pMin = Integer.parseInt(pParts[0].trim()) * 60 + Integer.parseInt(pParts[1].trim());
+                    int rMin = Integer.parseInt(rParts[0].trim()) * 60 + Integer.parseInt(rParts[1].trim());
+                    return rMin - pMin;
+                } catch (Exception e) {
+                    return 0;
+                }
+            }
+        }
+        return 0;
     }
 
     /**

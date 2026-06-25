@@ -52,10 +52,12 @@ public class Cooperativa {
             sb.append(" | Tipo: ").append(v.getTipoCombustible()).append("\n");
             if (v instanceof VehiculoElectrico) {
                 VehiculoElectrico ve = (VehiculoElectrico) v;
-                sb.append("  [Batería: ").append(ve.getCapacidadBateria()).append(" kWh | Carga: ").append(ve.getNivelCarga()).append("%]\n");
+                sb.append("  [Batería: ").append(ve.getCapacidadBateria()).append(" kWh | Carga: ").append(ve.getNivelCarga()).append("%");
+                sb.append(" | Autonomía real: ").append(ve.calcularAutonomiaRestante()).append(" kWh]\n");
             } else if (v instanceof VehiculoDiesel) {
                 VehiculoDiesel vd = (VehiculoDiesel) v;
-                sb.append("  [Tanque: ").append(vd.getCapacidadDeTanque()).append(" L | Combustible: ").append(vd.getNivelDeCombustible()).append(" L]\n");
+                sb.append("  [Tanque: ").append(vd.getCapacidadDeTanque()).append(" L | Combustible: ").append(vd.getNivelDeCombustible()).append(" L");
+                sb.append(" | Autonomía real: ").append(vd.calcularAutonomiaRestante()).append(" Litros]\n");
             }
         }
         sb.append("\n");
@@ -83,9 +85,11 @@ public class Cooperativa {
      * 1. Devuelve un texto con número de registro, nombre y dirección.
      */
     public String mostrarInformacionDeCooperativa() {
-        return "Número de registro: " + numeroDeRegistro
-                + "\nNombre: " + nombre
-                + "\nDirección: " + direccion;
+        return "Cooperativa: " + nombre
+                + "\nRegistro Operativo N°: " + numeroDeRegistro
+                + "\nSede Central: " + direccion
+                + "\nEmpleados Totales: " + usuarios.size()
+                + "\nFlota Total: " + flotas.size() + " vehículos";
     }
 
     public String getNumeroDeRegistro() { return numeroDeRegistro; }

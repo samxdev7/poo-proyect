@@ -52,14 +52,14 @@ public class Jornada {
      * 1. Simula el registro de la hora de inicio.
      */
     public void registrarHoraDeInicio() {
-        this.horaDeInicioRegistrado = "Hora registrada inicio";
+        this.horaDeInicioRegistrado = "Ahora";
     }
 
     /**
      * 1. Simula el registro de la hora de fin.
      */
     public void registrarHoraDeFin() {
-        this.horaDeFinRegistrado = "Hora registrada fin";
+        this.horaDeFinRegistrado = "Ahora";
     }
 
     public String getNumeroDeJornada() { return numeroDeJornada; }
