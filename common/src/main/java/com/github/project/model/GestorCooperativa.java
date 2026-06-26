@@ -35,7 +35,16 @@ public class GestorCooperativa extends Usuario {
      * @param tipoDeUsuario Tipo de rol
      */
     public void registrarUsuario(String nombre, String contrasena, String tipoDeUsuario) {
-        // Limitado por la falta de métodos de inicialización en el modelo estricto.
+        String idUnico = "U-" + System.currentTimeMillis();
+        Usuario nuevo = null;
+        if ("GESTOR".equalsIgnoreCase(tipoDeUsuario)) {
+            nuevo = new GestorCooperativa(idUnico, nombre, contrasena, "GESTOR", true, getCooperativa(), "G-" + idUnico);
+        } else if ("MONITOR".equalsIgnoreCase(tipoDeUsuario)) {
+            nuevo = new Monitor(idUnico, nombre, contrasena, "MONITOR", true, getCooperativa(), "M-" + idUnico);
+        } else {
+            nuevo = new Conductor(idUnico, nombre, contrasena, "CONDUCTOR", true, getCooperativa(), "LIC-" + idUnico, true);
+        }
+        agregarUsuarioACooperativa(nuevo);
     }
 
     /**
@@ -46,7 +55,7 @@ public class GestorCooperativa extends Usuario {
      * @param placa Placa del vehículo
      */
     public void asignarConductorAVehiculo(String cedula, String placa) {
-        // Implementación dependiente de futuras propiedades según reglas estrictas.
+        // En nuestro dominio la relación conductor-vehículo ocurre a través de Jornada.
     }
 
     /**
@@ -59,8 +68,36 @@ public class GestorCooperativa extends Usuario {
      * @return La nueva Jornada instanciada o null en ausencia de detalles de construcción
      */
     public Jornada iniciarJornada(String placa, String idRuta) {
-        // Como la creación de Jornada requiere Vehiculo, Conductor y Ruta según UML, 
-        // y no los tenemos en parámetros, se deja en null por ahora.
+        if (getCooperativa() != null) {
+            Vehiculo vSeleccionado = null;
+            for (Vehiculo v : getCooperativa().getFlotas()) {
+                if (v.getPlaca().equals(placa)) {
+                    vSeleccionado = v;
+                    break;
+                }
+            }
+            Ruta rSeleccionada = null;
+            for (Ruta r : getCooperativa().getRutas()) {
+                if (r.getIdRuta().equals(idRuta)) {
+                    rSeleccionada = r;
+                    break;
+                }
+            }
+            Conductor cDisponible = null;
+            for (Usuario u : getCooperativa().getUsuarios()) {
+                if ("CONDUCTOR".equalsIgnoreCase(u.getTipoUsuario()) && ((Conductor)u).isDisponible()) {
+                    cDisponible = (Conductor) u;
+                    break;
+                }
+            }
+
+            if (vSeleccionado != null && rSeleccionada != null && cDisponible != null) {
+                String numJornada = "J0" + (getCooperativa().getJornadasActivas().size() + 1);
+                Jornada j = new Jornada(numJornada, "Ahora", vSeleccionado, cDisponible, rSeleccionada);
+                getCooperativa().getJornadasActivas().add(j);
+                return j;
+            }
+        }
         return null;
     }
 

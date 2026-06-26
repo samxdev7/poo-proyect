@@ -33,7 +33,36 @@ public class InicioMonitorForm extends Form {
         maquetarInterfazVisual();
     }
 
+    private Container wrapForDialog(Container body) {
+        Container wrapper = new Container(new BorderLayout());
+        wrapper.add(BorderLayout.CENTER, body);
+        
+        Label spacer = new Label();
+        spacer.getAllStyles().setPaddingUnit(com.codename1.ui.plaf.Style.UNIT_TYPE_PIXELS);
+        spacer.getAllStyles().setPaddingLeft(com.codename1.ui.Display.getInstance().getDisplayWidth() - 80);
+        wrapper.add(BorderLayout.NORTH, spacer);
+        
+        return wrapper;
+    }
+
+    private boolean isFormatoHoraValido(String hora) {
+        if (hora == null) return false;
+        int colonIdx = hora.indexOf(':');
+        if (colonIdx < 1 || colonIdx > 2 || colonIdx == hora.length() - 1) return false;
+        String hStr = hora.substring(0, colonIdx);
+        String mStr = hora.substring(colonIdx + 1);
+        if (mStr.length() != 2) return false;
+        try {
+            int h = Integer.parseInt(hStr);
+            int m = Integer.parseInt(mStr);
+            return h >= 0 && h <= 23 && m >= 0 && m <= 59;
+        } catch (NumberFormatException ex) {
+            return false;
+        }
+    }
+
     private void maquetarInterfazVisual() {
+        this.removeAllCommands();
         Toolbar tb = getToolbar();
         tb.setTitle("Punto de Control");
         
@@ -47,8 +76,7 @@ public class InicioMonitorForm extends Form {
 
         // Contenedor central para scroll seguro de informacion de control y jornadas
         Container contenedorCentral = new Container(BoxLayout.y());
-        contenedorCentral.setScrollableY(true); 
-
+        contenedorCentral.setScrollableY(true);
 
         java.util.List<com.github.project.model.PuntoControl> misPuntos = monitor.getPuntosDeControlAsignados();
         
@@ -101,57 +129,95 @@ public class InicioMonitorForm extends Form {
 
             com.codename1.ui.ComboBox<String> cmbNivel = new com.codename1.ui.ComboBox<>("LEVE", "MODERADA", "GRAVE");
 
-            com.codename1.ui.TextArea txtDetalle = new com.codename1.ui.TextArea(5, 20);
-            txtDetalle.setHint("Ej: Exceso de velocidad");
-            txtDetalle.setSingleLineTextArea(false);
+            Form f1 = new Form("Infracción (Paso 1/2)", new BorderLayout());
+            f1.setUIID("FormGestor");
+            f1.getToolbar().addMaterialCommandToLeftBar("", FontImage.MATERIAL_ARROW_BACK, evt -> this.showBack());
+
             TextField txtFecha = new TextField("", "DD/MM/YYYY");
             TextField txtHora = new TextField("", "HH:MM (24h)");
             txtFecha.setUIID("CampoTexto");
             txtHora.setUIID("CampoTexto");
             
-            Command cmdEnviar = new Command("Enviar");
-            Command cmdCancelar = new Command("Cancelar");
-            
-            Command resultado = Dialog.show(
-                "Nueva Infracción", 
-                BoxLayout.encloseY(
-                    new Label("Conductor:"), cmbChofer,
-                    new Label("Nivel de Infracción:"), cmbNivel,
-                    new Label("Fecha:"), txtFecha,
-                    new Label("Hora:"), txtHora,
-                    new Label("Detalle:"), txtDetalle
-                ), 
-                new Command[] { cmdEnviar, cmdCancelar }
+            Container body1 = BoxLayout.encloseY(
+                new Label("Conductor:"), cmbChofer,
+                new Label("Nivel de Infracción:"), cmbNivel,
+                new Label("Fecha:"), txtFecha,
+                new Label("Hora (HH:MM):"), txtHora
             );
+            body1.setScrollableY(true);
             
-            if (resultado == cmdEnviar) {
-                if (cmbChofer.getSelectedItem() == null || txtDetalle.getText().trim().isEmpty() || txtHora.getText().trim().isEmpty()) {
-                    Dialog.show("Error", "Debe llenar todos los campos requeridos.", "OK", null);
+            Button btnSiguiente = new Button("Siguiente");
+            btnSiguiente.setUIID("BotonLogin");
+            btnSiguiente.addActionListener(evt -> {
+                if (cmbChofer.getSelectedItem() == null || txtHora.getText().trim().isEmpty() || txtFecha.getText().trim().isEmpty()) {
+                    Dialog.show("Error", "Debe llenar Fecha y Hora.", "OK", null);
                     return;
                 }
-                com.github.project.model.Conductor infractor = null;
-                for (com.github.project.model.Usuario u : cooperativa.getUsuarios()) {
-                     if (cmbChofer.getSelectedItem().equals(u.getNombre())) {
-                          infractor = (com.github.project.model.Conductor) u;
-                          break;
-                     }
+                if (!isFormatoHoraValido(txtHora.getText().trim())) {
+                    Dialog.show("Error", "La hora debe tener formato 24h (HH:MM)", "OK", null);
+                    return;
                 }
-                if (infractor != null) {
-                     java.util.List<com.github.project.model.Infraccion> lista = new java.util.ArrayList<>(infractor.getInfracciones());
-                     lista.add(new com.github.project.model.Infraccion(
-                        "I-" + System.currentTimeMillis(), 
-                        txtDetalle.getText(), 
-                        cmbNivel.getSelectedItem(), 
-                        txtFecha.getText() + " " + txtHora.getText(), 
-                        "N/A", 
-                        monitor.getNombre()
-                     ));
-                     infractor.setInfracciones(lista);
-                     Dialog.show("Reportado", "Infracción registrada.", "OK", null);
-                } else {
-                     Dialog.show("Error", "Conductor no encontrado.", "OK", null);
-                }
-            }
+                
+                Form f2 = new Form("Detalle (Paso 2/2)", new BorderLayout());
+                f2.setUIID("FormGestor");
+                f2.getToolbar().addMaterialCommandToLeftBar("", FontImage.MATERIAL_ARROW_BACK, ev2 -> f1.showBack());
+                
+                com.codename1.ui.TextArea txtDetalle = new com.codename1.ui.TextArea(5, 20);
+                txtDetalle.setHint("Ej: Exceso de velocidad");
+                txtDetalle.setSingleLineTextArea(false);
+                
+                Container contDetalle = new Container(new BorderLayout());
+                contDetalle.setUIID("TarjetaContenedor");
+                contDetalle.add(BorderLayout.NORTH, new Label("Descripción de Infracción:"));
+                contDetalle.add(BorderLayout.CENTER, txtDetalle);
+                
+                Container bodyDetalle = BoxLayout.encloseY(
+                    contDetalle
+                );
+                bodyDetalle.setScrollableY(true);
+                
+                Button btnEnviar = new Button("Enviar Reporte");
+                btnEnviar.setUIID("BotonLogin");
+                btnEnviar.addActionListener(ev2 -> {
+                    if (txtDetalle.getText().trim().isEmpty()) {
+                        Dialog.show("Error", "La descripción de la infracción es obligatoria.", "OK", null);
+                        return;
+                    }
+                    
+                    com.github.project.model.Conductor infractor = null;
+                    for (com.github.project.model.Usuario u : cooperativa.getUsuarios()) {
+                         if (cmbChofer.getSelectedItem().equals(u.getNombre())) {
+                              infractor = (com.github.project.model.Conductor) u;
+                              break;
+                         }
+                    }
+                    if (infractor != null) {
+                         java.util.List<com.github.project.model.Infraccion> lista = new java.util.ArrayList<>(infractor.getInfracciones());
+                         lista.add(new com.github.project.model.Infraccion(
+                            "I-" + System.currentTimeMillis(), 
+                            txtDetalle.getText(), 
+                            cmbNivel.getSelectedItem(), 
+                            txtFecha.getText() + " " + txtHora.getText(), 
+                            "N/A", 
+                            monitor.getNombre()
+                         ));
+                         infractor.setInfracciones(lista);
+                         
+                         this.showBack();
+                         Dialog.show("Reportado", "Infracción registrada exitosamente.", "OK", null);
+                    } else {
+                         Dialog.show("Error", "Conductor no encontrado.", "OK", null);
+                    }
+                });
+                
+                f2.add(BorderLayout.CENTER, bodyDetalle);
+                f2.add(BorderLayout.SOUTH, btnEnviar);
+                f2.show();
+            });
+            
+            f1.add(BorderLayout.CENTER, body1);
+            f1.add(BorderLayout.SOUTH, btnSiguiente);
+            f1.show();
         });
         contenedorCentral.addAll(
             tituloTarjeta, tarjetaControl, 

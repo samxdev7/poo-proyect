@@ -24,6 +24,7 @@ public class InicioGestorForm extends Form {
 
     private GestorCooperativa gestor;
     private Cooperativa cooperativa;
+    private boolean menuConstruido = false;
 
     public InicioGestorForm(GestorCooperativa gestor, Cooperativa cooperativa) {
         super(new BorderLayout());
@@ -33,7 +34,21 @@ public class InicioGestorForm extends Form {
         maquetarVisual();
     }
 
+    private Container wrapForDialog(Container body) {
+        Container wrapper = new Container(new BorderLayout());
+        wrapper.add(BorderLayout.CENTER, body);
+        
+        // Espaciador invisible para FORZAR el ancho del diálogo
+        Label spacer = new Label();
+        spacer.getAllStyles().setPaddingUnit(com.codename1.ui.plaf.Style.UNIT_TYPE_PIXELS);
+        spacer.getAllStyles().setPaddingLeft(com.codename1.ui.Display.getInstance().getDisplayWidth() - 80);
+        wrapper.add(BorderLayout.NORTH, spacer);
+        
+        return wrapper;
+    }
+
     private void maquetarVisual() {
+        this.removeAllCommands();
         Toolbar tb = getToolbar();
         tb.setUIID("ToolbarGestor"); 
         tb.setTitle("Cooperativa");
@@ -104,6 +119,10 @@ public class InicioGestorForm extends Form {
     }
 
     private void ejecutarRegistrarUsuario() {
+        Form f1 = new Form("Registrar Usuario (Paso 1)", new BorderLayout());
+        f1.setUIID("FormGestor");
+        f1.getToolbar().addMaterialCommandToLeftBar("", FontImage.MATERIAL_ARROW_BACK, e -> this.showBack());
+        
         TextField txtNombre = new TextField("", "Nombre completo");
         txtNombre.setUIID("CampoTexto");
         
@@ -114,20 +133,16 @@ public class InicioGestorForm extends Form {
         ComboBox<String> cmbRol = new ComboBox<>("Conductor", "Monitor", "Gestor");
         cmbRol.setUIID("CampoTexto"); 
         
-        Command cmdSiguiente = new Command("Siguiente");
-        Command cmdCancelar = new Command("Cancelar");
-        
-        Command resultado1 = Dialog.show(
-            "Registrar Usuario (Paso 1)", 
-            BoxLayout.encloseY(
-                new Label("Nombre completo:"), txtNombre, 
-                new Label("Contraseña provisoria:"), txtPassword, 
-                new Label("Rol operativo:"), cmbRol
-            ), 
-            new Command[] { cmdSiguiente, cmdCancelar }
+        Container body1 = BoxLayout.encloseY(
+            new Label("Nombre completo:"), txtNombre, 
+            new Label("Contraseña provisoria:"), txtPassword, 
+            new Label("Rol operativo:"), cmbRol
         );
+        body1.setScrollableY(true);
         
-        if (resultado1 == cmdSiguiente) {
+        Button btnSiguiente = new Button("Siguiente");
+        btnSiguiente.setUIID("BotonLogin");
+        btnSiguiente.addActionListener(e -> {
             if (txtNombre.getText().trim().isEmpty() || txtPassword.getText().trim().isEmpty()) {
                 Dialog.show("Error", "Nombre y contraseña son obligatorios.", "OK", null);
                 return;
@@ -136,20 +151,21 @@ public class InicioGestorForm extends Form {
             String rolSeleccionado = cmbRol.getSelectedItem();
             String etiquetaEspecial = "CONDUCTOR".equalsIgnoreCase(rolSeleccionado) ? "Licencia de Conducir:" : "ID de Empleado:";
             
+            Form f2 = new Form("Datos de " + rolSeleccionado, new BorderLayout());
+            f2.setUIID("FormGestor");
+            f2.getToolbar().addMaterialCommandToLeftBar("", FontImage.MATERIAL_ARROW_BACK, e2 -> f1.showBack());
+            
             TextField txtIdEspecial = new TextField("", etiquetaEspecial);
             txtIdEspecial.setUIID("CampoTexto");
             
-            Command cmdGuardar = new Command("Guardar");
-            
-            Command resultado2 = Dialog.show(
-                "Datos de " + rolSeleccionado, 
-                BoxLayout.encloseY(
-                    new Label(etiquetaEspecial), txtIdEspecial
-                ), 
-                new Command[] { cmdGuardar, cmdCancelar }
+            Container body2 = BoxLayout.encloseY(
+                new Label(etiquetaEspecial), txtIdEspecial
             );
+            body2.setScrollableY(true);
             
-            if (resultado2 == cmdGuardar) {
+            Button btnGuardar = new Button("Guardar");
+            btnGuardar.setUIID("BotonLogin");
+            btnGuardar.addActionListener(e2 -> {
                 if (txtIdEspecial.getText().trim().isEmpty()) {
                     Dialog.show("Error", "El dato especial es obligatorio.", "OK", null);
                     return;
@@ -165,12 +181,23 @@ public class InicioGestorForm extends Form {
                     nuevo = new Conductor(idUnico, txtNombre.getText(), txtPassword.getText(), "CONDUCTOR", true, cooperativa, txtIdEspecial.getText(), true);
                 }
                 gestor.agregarUsuarioACooperativa(nuevo);
+                
                 this.removeAll();
                 maquetarVisual();
                 this.revalidate();
+                
+                this.showBack();
                 Dialog.show("Éxito", "Usuario '" + txtNombre.getText() + "' registrado correctamente.", "OK", null);
-            }
-        }
+            });
+            
+            f2.add(BorderLayout.CENTER, body2);
+            f2.add(BorderLayout.SOUTH, btnGuardar);
+            f2.show();
+        });
+        
+        f1.add(BorderLayout.CENTER, body1);
+        f1.add(BorderLayout.SOUTH, btnSiguiente);
+        f1.show();
     }
 
     private void ejecutarModificarUsuario() {
@@ -185,16 +212,17 @@ public class InicioGestorForm extends Form {
         }
         ComboBox<String> cmbUsuario = new ComboBox<>(listaUsuarios);
 
-        Command cmdSeleccionar = new Command("Seleccionar");
-        Command cmdCancelar = new Command("Cancelar");
+        Form f1 = new Form("Modificar Personal", new BorderLayout());
+        f1.setUIID("FormGestor");
+        f1.getToolbar().addMaterialCommandToLeftBar("", FontImage.MATERIAL_ARROW_BACK, e -> this.showBack());
         
-        Command resultado1 = Dialog.show(
-            "Modificar Personal (Paso 1)", 
-            BoxLayout.encloseY(new Label("Seleccionar empleado:"), cmbUsuario), 
-            new Command[] { cmdSeleccionar, cmdCancelar }
-        );
+        Container bodyMod1 = BoxLayout.encloseY(new Label("Seleccionar empleado:"), cmbUsuario);
+        bodyMod1.setScrollableY(true);
         
-        if (resultado1 == cmdSeleccionar && cmbUsuario.getSelectedItem() != null) {
+        Button btnSeleccionar = new Button("Seleccionar");
+        btnSeleccionar.setUIID("BotonLogin");
+        btnSeleccionar.addActionListener(e -> {
+            if (cmbUsuario.getSelectedItem() == null) return;
             String nombreBuscado = cmbUsuario.getSelectedItem();
             Usuario usuarioSeleccionado = null;
             for (Usuario u : cooperativa.getUsuarios()) {
@@ -205,6 +233,10 @@ public class InicioGestorForm extends Form {
             }
             
             if (usuarioSeleccionado != null) {
+                Form f2 = new Form("Modificando a " + usuarioSeleccionado.getNombre(), new BorderLayout());
+                f2.setUIID("FormGestor");
+                f2.getToolbar().addMaterialCommandToLeftBar("", FontImage.MATERIAL_ARROW_BACK, e2 -> f1.showBack());
+                
                 TextField txtNuevaPassword = new TextField(usuarioSeleccionado.getContrasena(), "Nueva contraseña");
                 txtNuevaPassword.setConstraint(TextField.PASSWORD);
                 txtNuevaPassword.setUIID("CampoTexto");
@@ -213,38 +245,46 @@ public class InicioGestorForm extends Form {
                 cmbEstado.setSelectedItem(usuarioSeleccionado.isActivo() ? "ACTIVO" : "INACTIVO");
                 cmbEstado.setUIID("CampoTexto");
                 
-                Command cmdGuardar = new Command("Guardar Cambios");
-                
-                Command resultado2 = Dialog.show(
-                    "Modificando a " + usuarioSeleccionado.getNombre(), 
-                    BoxLayout.encloseY(
-                        new Label("Contraseña:"), txtNuevaPassword,
-                        new Label("Estado Operativo:"), cmbEstado
-                    ), 
-                    new Command[] { cmdGuardar, cmdCancelar }
+                Container bodyMod2 = BoxLayout.encloseY(
+                    new Label("Contraseña:"), txtNuevaPassword,
+                    new Label("Estado Operativo:"), cmbEstado
                 );
+                bodyMod2.setScrollableY(true);
                 
-                if (resultado2 == cmdGuardar) {
+                Button btnGuardar = new Button("Guardar Cambios");
+                btnGuardar.setUIID("BotonLogin");
+                
+                Usuario finalUsuarioSeleccionado = usuarioSeleccionado;
+                btnGuardar.addActionListener(e3 -> {
                     if (txtNuevaPassword.getText().trim().isEmpty()) {
                         Dialog.show("Error", "La contraseña no puede estar vacía.", "OK", null);
                         return;
                     }
                     
-                    usuarioSeleccionado.cambiarContrasena(txtNuevaPassword.getText());
+                    finalUsuarioSeleccionado.cambiarContrasena(txtNuevaPassword.getText());
                     boolean estadoNuevo = "ACTIVO".equals(cmbEstado.getSelectedItem());
                     
-                    if (estadoNuevo != usuarioSeleccionado.isActivo()) {
+                    if (estadoNuevo != finalUsuarioSeleccionado.isActivo()) {
                         if (estadoNuevo) {
-                            gestor.activarUsuario(usuarioSeleccionado.getIdUsuario());
+                            gestor.activarUsuario(finalUsuarioSeleccionado.getIdUsuario());
                         } else {
-                            gestor.desactivarUsuario(usuarioSeleccionado.getIdUsuario());
+                            gestor.desactivarUsuario(finalUsuarioSeleccionado.getIdUsuario());
                         }
                     }
                     
-                    Dialog.show("Éxito", "Usuario " + usuarioSeleccionado.getNombre() + " actualizado correctamente.", "OK", null);
-                }
+                    this.showBack();
+                    Dialog.show("Éxito", "Usuario " + finalUsuarioSeleccionado.getNombre() + " actualizado correctamente.", "OK", null);
+                });
+                
+                f2.add(BorderLayout.CENTER, bodyMod2);
+                f2.add(BorderLayout.SOUTH, btnGuardar);
+                f2.show();
             }
-        }
+        });
+        
+        f1.add(BorderLayout.CENTER, bodyMod1);
+        f1.add(BorderLayout.SOUTH, btnSeleccionar);
+        f1.show();
     }
 
     private void ejecutarGestionJornada() {
@@ -278,30 +318,46 @@ public class InicioGestorForm extends Form {
             return;
         }
 
-        TextField txtFechaHora = new TextField("", "Ej: 06:00 AM - 15/05/2026");
-        txtFechaHora.setUIID("CampoTexto");
+        Form f1 = new Form("Iniciar Jornada", new BorderLayout());
+        f1.setUIID("FormGestor");
+        f1.getToolbar().addMaterialCommandToLeftBar("", FontImage.MATERIAL_ARROW_BACK, e -> this.showBack());
 
-        Command cmdAsignar = new Command("Asignar");
-        Command cmdCancelar = new Command("Cancelar");
+        TextField txtFecha = new TextField("", "Ej: 15/05/2026");
+        txtFecha.setUIID("CampoTexto");
         
-        Command resultado = Dialog.show(
-            "Iniciar Jornada", 
-            BoxLayout.encloseY(
-                new Label("Conductor Disponible:"), cmbChofer, 
-                new Label("Vehículo de la Flota:"), cmbVehiculo,
-                new Label("Ruta Asignada:"), cmbRuta,
-                new Label("Fecha y Hora de Inicio:"), txtFechaHora
-            ), 
-            new Command[] { cmdAsignar, cmdCancelar }
+        TextField txtHora = new TextField("", "Ej: 06:00 (HH:MM)");
+        txtHora.setUIID("CampoTexto");
+        
+        if (!cooperativa.getRutas().isEmpty()) {
+            txtHora.setText(cooperativa.getRutas().get(0).getHoraDeSalida());
+        }
+        
+        cmbRuta.addActionListener(evt -> {
+            for (com.github.project.model.Ruta r : cooperativa.getRutas()) {
+                if (r.getNombreDeRuta().equals(cmbRuta.getSelectedItem())) {
+                    txtHora.setText(r.getHoraDeSalida());
+                    break;
+                }
+            }
+        });
+
+        Container bodyJornada = BoxLayout.encloseY(
+            new Label("Conductor Disponible:"), cmbChofer, 
+            new Label("Vehículo de la Flota:"), cmbVehiculo,
+            new Label("Ruta Asignada:"), cmbRuta,
+            new Label("Horario de Inicio:"), txtHora,
+            new Label("Fecha de Inicio:"), txtFecha
         );
+        bodyJornada.setScrollableY(true);
         
-        if (resultado == cmdAsignar) {
+        Button btnAsignar = new Button("Asignar Jornada");
+        btnAsignar.setUIID("BotonLogin");
+        btnAsignar.addActionListener(e -> {
             if (cmbChofer.getSelectedItem() == null || cmbVehiculo.getSelectedItem() == null || cmbRuta.getSelectedItem() == null) {
                 Dialog.show("Error", "Debe seleccionar opciones válidas.", "OK", null);
                 return;
             }
             
-            // Buscar conductor
             Conductor conductorSeleccionado = null;
             for (Usuario u : cooperativa.getUsuarios()) {
                 if (cmbChofer.getSelectedItem().equals(u.getNombre())) {
@@ -310,7 +366,6 @@ public class InicioGestorForm extends Form {
                 }
             }
             
-            // Buscar Vehículo
             com.github.project.model.Vehiculo vehiculoSeleccionado = null;
             for (com.github.project.model.Vehiculo v : cooperativa.getFlotas()) {
                 if (cmbVehiculo.getSelectedItem().equals(v.getPlaca())) {
@@ -328,17 +383,18 @@ public class InicioGestorForm extends Form {
             }
 
             if (conductorSeleccionado != null && vehiculoSeleccionado != null && rutaSeleccionada != null) {
-                // Evitar jornadas duplicadas
                 for (com.github.project.model.Jornada j : cooperativa.getJornadasActivas()) {
-                    if (j.getConductor().equals(conductorSeleccionado) && j.getFecha().equalsIgnoreCase(txtFechaHora.getText())) {
-                        Dialog.show("Error", "Este conductor ya tiene una jornada asignada en esa misma fecha y hora.", "OK", null);
+                    if (j.getConductor().equals(conductorSeleccionado) && j.getFecha().equalsIgnoreCase(txtFecha.getText())) {
+                        Dialog.show("Error", "Este conductor ya tiene una jornada asignada en esa misma fecha.", "OK", null);
                         return;
                     }
                 }
 
                 String numJornada = "J0" + (cooperativa.getJornadasActivas().size() + cooperativa.getJornadasFinalizadas().size() + 1);
+                String horaElegida = txtHora.getText().trim().isEmpty() ? rutaSeleccionada.getHoraDeSalida() : txtHora.getText().trim();
+                String fechaHoraStr = txtFecha.getText().isEmpty() ? "Ahora" : txtFecha.getText() + " " + horaElegida;
                 com.github.project.model.Jornada nuevaJornada = new com.github.project.model.Jornada(
-                        numJornada, txtFechaHora.getText().isEmpty() ? "Ahora" : txtFechaHora.getText(), vehiculoSeleccionado, conductorSeleccionado, rutaSeleccionada);
+                        numJornada, fechaHoraStr, vehiculoSeleccionado, conductorSeleccionado, rutaSeleccionada);
                 
                 cooperativa.getJornadasActivas().add(nuevaJornada);
                 
@@ -346,12 +402,21 @@ public class InicioGestorForm extends Form {
                 maquetarVisual();
                 this.revalidate();
                 
+                this.showBack();
                 Dialog.show("Asignado", "Jornada " + numJornada + " iniciada correctamente.", "OK", null);
             }
-        }
+        });
+        
+        f1.add(BorderLayout.CENTER, bodyJornada);
+        f1.add(BorderLayout.SOUTH, btnAsignar);
+        f1.show();
     }
     
     private void ejecutarGestionVehiculo() {
+        Form f1 = new Form("Registro de Vehículo (Paso 1)", new BorderLayout());
+        f1.setUIID("FormGestor");
+        f1.getToolbar().addMaterialCommandToLeftBar("", FontImage.MATERIAL_ARROW_BACK, e -> this.showBack());
+        
         TextField txtPlaca = new TextField("", "Ej: M-123456");
         TextField txtMarca = new TextField("", "Ej: Toyota");
         ComboBox<String> cmbTipo = new ComboBox<>("Diésel", "Eléctrico");
@@ -360,44 +425,41 @@ public class InicioGestorForm extends Form {
         txtMarca.setUIID("CampoTexto");
         cmbTipo.setUIID("CampoTexto");
         
-        Command cmdSiguiente = new Command("Siguiente");
-        Command cmdCancelar = new Command("Cancelar");
-        
-        Command resultado1 = Dialog.show(
-            "Registro de Vehículo (Paso 1)", 
-            BoxLayout.encloseY(
-                new Label("Placa:"), txtPlaca, 
-                new Label("Marca/Modelo:"), txtMarca,
-                new Label("Tipo de Vehículo:"), cmbTipo
-            ), 
-            new Command[] { cmdSiguiente, cmdCancelar }
+        Container bodyVehiculo1 = BoxLayout.encloseY(
+            new Label("Placa:"), txtPlaca, 
+            new Label("Marca/Modelo:"), txtMarca,
+            new Label("Tipo de Vehículo:"), cmbTipo
         );
+        bodyVehiculo1.setScrollableY(true);
         
-        if (resultado1 == cmdSiguiente) {
+        Button btnSiguiente = new Button("Siguiente");
+        btnSiguiente.setUIID("BotonLogin");
+        btnSiguiente.addActionListener(e -> {
             if (txtPlaca.getText().trim().isEmpty() || txtMarca.getText().trim().isEmpty()) {
                 Dialog.show("Error", "Todos los campos de texto son requeridos.", "OK", null);
                 return;
             }
 
-            com.github.project.model.Vehiculo v;
             boolean esElectrico = "Eléctrico".equalsIgnoreCase(cmbTipo.getSelectedItem()) || "Electrico".equalsIgnoreCase(cmbTipo.getSelectedItem());
+            
+            Form f2 = new Form("Especificaciones del " + cmbTipo.getSelectedItem(), new BorderLayout());
+            f2.setUIID("FormGestor");
+            f2.getToolbar().addMaterialCommandToLeftBar("", FontImage.MATERIAL_ARROW_BACK, e2 -> f1.showBack());
             
             TextField txtDato1 = new TextField("", esElectrico ? "Capacidad Batería (kWh)" : "Capacidad Tanque (Litros)");
             TextField txtDato2 = new TextField("", esElectrico ? "Nivel de Carga (%)" : "Nivel de Combustible (Litros)");
             txtDato1.setUIID("CampoTexto");
             txtDato2.setUIID("CampoTexto");
 
-            Command cmdGuardar = new Command("Guardar");
-            Command resultado2 = Dialog.show(
-                "Especificaciones del " + cmbTipo.getSelectedItem(),
-                BoxLayout.encloseY(
-                    new Label(esElectrico ? "Batería:" : "Tanque:"), txtDato1,
-                    new Label("Carga/Nivel Actual:"), txtDato2
-                ),
-                new Command[] { cmdGuardar, cmdCancelar }
+            Container bodyVehiculo2 = BoxLayout.encloseY(
+                new Label(esElectrico ? "Batería:" : "Tanque:"), txtDato1,
+                new Label("Carga/Nivel Actual:"), txtDato2
             );
-
-            if (resultado2 == cmdGuardar) {
+            bodyVehiculo2.setScrollableY(true);
+            
+            Button btnGuardar = new Button("Guardar Vehículo");
+            btnGuardar.setUIID("BotonLogin");
+            btnGuardar.addActionListener(e2 -> {
                 double val1 = 0;
                 double val2 = 0;
                 try {
@@ -405,6 +467,7 @@ public class InicioGestorForm extends Form {
                     val2 = Double.parseDouble(txtDato2.getText().trim());
                 } catch (Exception ex) {}
 
+                com.github.project.model.Vehiculo v;
                 if (esElectrico) {
                     v = new com.github.project.model.VehiculoElectrico(txtPlaca.getText(), txtMarca.getText(), "Standard", "Eléctrico", "Activo", "VE-" + txtPlaca.getText(), val1, val2, 0);
                 } else {
@@ -416,8 +479,17 @@ public class InicioGestorForm extends Form {
                 maquetarVisual();
                 this.revalidate();
                 
+                this.showBack();
                 Dialog.show("Éxito", "Vehículo " + txtPlaca.getText() + " registrado y activo.", "OK", null);
-            }
-        }
+            });
+            
+            f2.add(BorderLayout.CENTER, bodyVehiculo2);
+            f2.add(BorderLayout.SOUTH, btnGuardar);
+            f2.show();
+        });
+        
+        f1.add(BorderLayout.CENTER, bodyVehiculo1);
+        f1.add(BorderLayout.SOUTH, btnSiguiente);
+        f1.show();
     }
 }

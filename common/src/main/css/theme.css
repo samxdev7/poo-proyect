@@ -7,8 +7,8 @@ Form {
 CampoTexto {
     background-color: #FFFFFF;
     color: #1F2937;
-    margin: 2mm;
-    padding: 3.5mm;
+    margin: 1mm 2mm 5mm 2mm;
+    padding: 4.5mm;
     border: 1px solid #CBD5E1;
     border-radius: 3.5mm;
 }
@@ -110,8 +110,8 @@ InfraccionLinea2 {
 CampoTexto {
     background-color: #FFFFFF;
     color: #1E293B;
-    margin: 2mm;
-    padding: 3.5mm;
+    margin: 1mm 2mm 5mm 2mm;
+    padding: 4.5mm;
     border: 1px solid #E2E8F0;
     border-radius: 3.5mm;
 }
@@ -245,11 +245,15 @@ BotonMenuGestorLargo {
 
 BotonMenuGestorLargo.pressed {
     background-color: #1E40AF;
-    color: #FFFFFF;
+    color: #0000FF;
+}
+
+SideNavigationPanel {
+    background-color: #2563EB;
 }
 
 SideMenuPanel {
-    background-color: #FFFFFF;
+    background-color: #0000FF;
     margin: 2mm;
     padding: 4mm;
     border: 1px solid #E2E8F0;
@@ -264,7 +268,8 @@ SideCommand {
 }
 
 SideCommand.pressed {
-    background-color: #FEF3C7;
+    background-color: #1E40AF;
+    color: #FFFFFF;
 }
 
 /*InicioMonitorForm*/
@@ -296,8 +301,8 @@ MultiButton.pressed {
 CampoTexto {
     background-color: #FFFFFF;
     color: #2C3E50;
-    margin: 2mm;
-    padding: 3.5mm;
+    margin: 1mm 2mm 5mm 2mm;
+    padding: 4.5mm;
     border: 1px solid #CBD5E1;
     border-radius: 3.5mm;
 }
@@ -351,7 +356,7 @@ Title {
 
 Label {
     color: #2C3E50;
-    margin: 1mm;
+    margin: 3mm 2mm 1mm 2mm;
 }
 
 /*Botones de confirmacion (si o no)*/
@@ -367,3 +372,4 @@ DialogCommandPressed {
 Button {
     color: #000000;
 }
+
